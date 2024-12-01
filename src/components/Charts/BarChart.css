@@ -1,0 +1,18 @@
+.bar-chart-container {
+    font-family: sans-serif;
+    width: 600px;
+  
+  }
+  
+.custom-bar-chart text {
+    fill: #000000 !important;
+    font-size: 13px !important;
+  }
+  
+.bar-chart {
+    margin-left: 35px;
+} 
+
+.chart-title-1 {
+    font-weight: bold;
+}
