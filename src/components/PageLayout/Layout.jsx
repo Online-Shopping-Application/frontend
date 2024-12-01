@@ -59,7 +59,7 @@ export default function Layout({ children }) {
                         />
 
                     </Box>  */}
-                    <ProfileMenu />
+                    <ProfileMenu position="fixed"/>
                 </Toolbar>
             </AppBar>
             <Toolbar />

@@ -6,7 +6,7 @@ import List from '@mui/material/List';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
-import PeopleIcon from '@mui/icons-material/People';
+import InventoryIcon from '@mui/icons-material/Inventory';
 import PersonIcon from '@mui/icons-material/Person';
 import SpaceDashboardIcon from '@mui/icons-material/SpaceDashboard';
 import SettingsIcon from '@mui/icons-material/Settings';
@@ -75,9 +75,9 @@ export default function SideNav({ mobileOpen, handleDrawerToggle }) {
             onClick={() => navigate("/SellerList")} //navigate to Seller List page
           >
             <ListItemIcon style={{ color: location.pathname === "/SellerList" ? '#FFFFFF' : '#000000' }}>
-              <PeopleIcon style={{ fontSize: '30' }} />
+              <InventoryIcon style={{ fontSize: '30' }} />
             </ListItemIcon>
-            <ListItemText primary="Seller List" primaryTypographyProps={{
+            <ListItemText primary="Sellers List" primaryTypographyProps={{
               style: {
                 color: location.pathname === "/SellerList" ? '#FFFFFF' : '#000000',
                 fontSize: '18px'

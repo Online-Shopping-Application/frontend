@@ -4,6 +4,8 @@ import { useNavigate } from "react-router-dom";
 import LogoutIcon from "@mui/icons-material/Logout";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import SettingsIcon from "@mui/icons-material/Settings";
+import NotificationsIcon from '@mui/icons-material/Notifications';
+import Badge from '@mui/material/Badge';
 import Divider from "@mui/material/Divider";
 
 
@@ -32,15 +34,29 @@ export default function ProfileMenu() {
 
 
     return (
-        <Box sx={{ display: 'flex', justifyContent: 'flex-end', width: '100%'}}>
+        <Box sx={{ display: 'flex', justifyContent: 'flex-end', width: '100%' }}>
             <IconButton
                 edge="end"
                 aria-controls="profile-menu"
                 aria-haspopup="true"
                 onClick={handleMenuOpen}
                 color="inherit"
+                sx={{ mr: 2 }}
             >
-                <Avatar/>
+                <Badge badgeContent={4} color="error">
+                    <NotificationsIcon />
+                </Badge>
+            </IconButton>
+            <IconButton
+                edge="end"
+                aria-controls="profile-menu"
+                aria-haspopup="true"
+                onClick={handleMenuOpen}
+                color="inherit"
+                sx={{ mr: 2 }}
+            >
+                <AccountCircleIcon />
+                {/*  <Avatar/> */}
             </IconButton>
             <Menu
                 id="profile-menu"
