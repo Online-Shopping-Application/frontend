@@ -1,191 +1,308 @@
 import React, { useState } from "react";
 import {
-  Box,
   Grid,
   TextField,
   Button,
   Typography,
-  Paper,
+  Box,
+  Divider,
 } from "@mui/material";
+import EditIcon from "@mui/icons-material/Edit";
+import DeleteIcon from "@mui/icons-material/Delete";
 
 const CheckOut = () => {
+  const [addresses, setAddresses] = useState([
+    {
+      id: 1,
+      name: "Robert Fox",
+      mobileNumber: "123 456 7890",
+      houseNo: "4517 Washington Ave.",
+      area: "Manchester",
+      city: "Kentucky",
+      state: "Kentucky",
+      postalCode: "39495",
+    },
+  ]);
+
+  const [editingId, setEditingId] = useState(null);
   const [formData, setFormData] = useState({
-    firstName: "",
-    lastName: "",
-    email: "",
-    street: "",
-    cityState: "",
-    zipCountry: "",
-    phone: "",
+    name: "",
+    mobileNumber: "",
+    houseNo: "",
+    area: "",
+    city: "",
+    state: "",
+    postalCode: "",
   });
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
+    setFormData({ ...formData, [name]: value });
   };
 
-  const handlePlaceOrder = () => {
-    console.log("Delivery Information:", formData);
-    console.log("Order placed successfully!");
-    // Add logic for order placement or payment here
+  const handleAddAddress = () => {
+    if (editingId) {
+      // Save edited address
+      setAddresses(
+        addresses.map((address) =>
+          address.id === editingId ? { ...formData, id: editingId } : address
+        )
+      );
+      setEditingId(null);
+    } else {
+      // Add new address
+      const newAddress = {
+        id: addresses.length + 1,
+        ...formData,
+      };
+      setAddresses([newAddress, ...addresses]); // Add new address to the top
+    }
+
+    // Reset form fields
+    setFormData({
+      name: "",
+      mobileNumber: "",
+      houseNo: "",
+      area: "",
+      city: "",
+      state: "",
+      postalCode: "",
+    });
   };
 
-  const cartTotals = {
-    subtotal: 60,
-    deliveryFee: 5,
-    total: 65,
+  const handleEdit = (address) => {
+    setEditingId(address.id);
+    setFormData(address); // Populate the form with address details
+  };
+
+  const handleDeleteAddress = (id) => {
+    setAddresses(addresses.filter((address) => address.id !== id));
+  };
+
+  const calculateTotal = () => {
+    return 50; // Replace with dynamic calculation if needed
   };
 
   return (
-    <Box
-      sx={{
-        display: "flex",
-        gap: 6, // Increase spacing between sections
-        p: 3,
-      }}
-    >
-      {/* Delivery Information Form */}
-      <Box
-        sx={{
-          flex: 0.6, // Reduced width for delivery information
-          display: "flex",
-          flexDirection: "column",
-          gap: 2,
-        }}
-      >
-        <Typography variant="h5" gutterBottom>
-          Delivery Information
+
+    
+    <Grid container spacing={4} justifyContent="" padding={10}>
+      
+      {/* Address List */}
+      <Grid item xs={8}>
+      <Typography variant="h4" sx={{ marginBottom: 4 }}>
+         Shipping Address
         </Typography>
-        <Grid container spacing={2}>
-          <Grid item xs={12} sm={6}>
+        {addresses.map((address) => (
+          <Box
+            key={address.id}
+            sx={{
+              border: "1px solid #ddd",
+              borderRadius: 1,
+              padding: 2,
+              marginBottom: 2,
+              backgroundColor: "#f9f9f9",
+            }}
+          >
+            <Box
+              sx={{
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+              }}
+            >
+              <Box>
+                <Typography variant="body1" fontWeight="bold">
+                  {address.name}
+                </Typography>
+                <Typography variant="body2">
+                  {address.houseNo}, {address.area}, {address.city}, {address.state},{" "}
+                  {address.postalCode}
+                </Typography>
+              </Box>
+              <Box display="flex" gap={1}>
+                <Button
+                  variant="outlined"
+                  size="small"
+                  startIcon={<EditIcon />}
+                  onClick={() => handleEdit(address)}
+                  sx={{
+                    textTransform: "none",
+                    borderColor: "#000", // Edit button border color black
+                    color: "#000", // Edit button text color black
+                    "&:hover": {
+                      borderColor: "#333", // Darker border on hover
+                      color: "#333", // Darker text on hover
+                    },
+                  }}
+                >
+                  Edit
+                </Button>
+                <Button
+                  variant="contained"
+                  size="small"
+                  startIcon={<DeleteIcon />}
+                  onClick={() => handleDeleteAddress(address.id)}
+                  sx={{
+                    textTransform: "none",
+                    backgroundColor: "#f44336",
+                    color: "#fff",
+                    "&:hover": { backgroundColor: "#d32f2f" },
+                  }}
+                >
+                  Delete
+                </Button>
+              </Box>
+            </Box>
+          </Box>
+        ))}
+      </Grid>
+
+      
+
+      {/* Address Form Section */}
+      <Grid item xs={8}>
+        <Typography variant="h6" sx={{ marginBottom: 4 ,}}>
+          Add new address
+        </Typography>
+
+        <Grid container spacing={2} direction="column">
+          <Grid item xs={12}>
             <TextField
               fullWidth
-              label="First Name"
-              name="firstName"
-              value={formData.firstName}
+              label="Name"
+              name="name"
+              value={formData.name}
               onChange={handleInputChange}
-            />
-          </Grid>
-          <Grid item xs={12} sm={6}>
-            <TextField
-              fullWidth
-              label="Last Name"
-              name="lastName"
-              value={formData.lastName}
-              onChange={handleInputChange}
+              variant="outlined"
             />
           </Grid>
           <Grid item xs={12}>
             <TextField
               fullWidth
-              label="Email Address"
-              name="email"
-              value={formData.email}
+              label="Mobile Number"
+              name="mobileNumber"
+              value={formData.mobileNumber}
               onChange={handleInputChange}
+              variant="outlined"
             />
           </Grid>
           <Grid item xs={12}>
             <TextField
               fullWidth
-              label="Street Address"
-              name="street"
-              value={formData.street}
+              label="Flat, House no., Building, Company, Apartment"
+              name="houseNo"
+              value={formData.houseNo}
               onChange={handleInputChange}
+              variant="outlined"
             />
           </Grid>
           <Grid item xs={12}>
             <TextField
               fullWidth
-              label="City, State"
-              name="cityState"
-              value={formData.cityState}
+              label="Area, Colony, Street, Sector, Village"
+              name="area"
+              value={formData.area}
               onChange={handleInputChange}
+              variant="outlined"
             />
           </Grid>
-          <Grid item xs={12}>
+          <Grid item xs={6}>
             <TextField
               fullWidth
-              label="Zip Code, Country"
-              name="zipCountry"
-              value={formData.zipCountry}
+              label="City"
+              name="city"
+              value={formData.city}
               onChange={handleInputChange}
+              variant="outlined"
             />
           </Grid>
-          <Grid item xs={12}>
+          <Grid item xs={6}>
             <TextField
               fullWidth
-              label="Phone Number"
-              name="phone"
-              value={formData.phone}
+              label="Postal Code"
+              name="postalCode"
+              value={formData.postalCode}
               onChange={handleInputChange}
+              variant="outlined"
+            />
+          </Grid>
+          <Grid item xs={6}>
+            <TextField
+              fullWidth
+              label="State"
+              name="state"
+              value={formData.state}
+              onChange={handleInputChange}
+              variant="outlined"
             />
           </Grid>
         </Grid>
-      </Box>
 
-      {/* Cart Totals Section */}
-      <Paper
-        elevation={3}
-        sx={{
-          flex: 0.4, // Increased width for cart totals
-          p: 6,
-          display: "flex",
-          flexDirection: "column",
-          gap: 4,
-        }}
-      >
-         <Typography variant="h5" sx={{ borderBottom: "1px solid #ccc", paddingBottom: "12px" }}  gutterBottom>
-          Cart Totals
-        </Typography>
-      
-        <Box
-          display="flex"
-          justifyContent="space-between"
-          alignItems="center"
-        >
-          <Typography>Subtotal:</Typography>
-          <Typography>${cartTotals.subtotal}</Typography>
-        </Box>
-        <Box
-          display="flex"
-          justifyContent="space-between"
-          alignItems="center"
-        >
-          <Typography>Delivery Fee:</Typography>
-          <Typography>${cartTotals.deliveryFee}</Typography>
-        </Box>
-        <Box
-          display="flex"
-          justifyContent="space-between"
-          alignItems="center"
-          fontWeight="bold"
-        >
-          <Typography>Total:</Typography>
-          <Typography>${cartTotals.total}</Typography>
-        </Box>
         <Button
           variant="contained"
-          color="primary"
           fullWidth
-          onClick={handlePlaceOrder}
+          onClick={handleAddAddress}
           sx={{
-            mt: 2,
-            backgroundColor: "#ff4500",
-            "&:hover": {
-              backgroundColor: "#e63900",
-            },
-            alignSelf: "center",
-            marginTop: "100px",
+            textTransform: "none",
+            backgroundColor: "#000",
+            color: "#fff",
+            marginTop: 2,
+            "&:hover": { backgroundColor: "#333" },
           }}
         >
-          Place Order
+          {editingId ? "Save Changes" : "Add New Address"}
         </Button>
-      </Paper>
-    </Box>
+      </Grid>
+
+      {/* Summary Section */}
+      <Grid item xs={4}>
+        <Box sx={{ border: "1px solid #ddd", padding: 2, borderRadius: 1 }}>
+          <Box
+            sx={{ display: "flex", justifyContent: "space-between",marginBottom: 2  }}
+          >
+            <Typography>Subtotal</Typography>
+            <Typography>${calculateTotal().toFixed(2)}</Typography>
+          </Box>
+
+          <Box
+            sx={{ display: "flex", justifyContent: "space-between", marginBottom: 2 }}
+          >
+            <Typography>Delivery Charge</Typography>
+            <Typography>$5.00</Typography>
+          </Box>
+
+          <Divider sx={{ marginBottom: 2 }} />
+
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "space-between",
+              marginBottom: 10,
+              marginTop: 3,
+            }}
+          >
+            <Typography variant="h6">Grand Total</Typography>
+            <Typography variant="h6">${(calculateTotal() + 5).toFixed(2)}</Typography>
+          </Box>
+
+          <Button
+            variant="contained"
+            fullWidth
+            sx={{
+              textTransform: "none",
+              backgroundColor: "#000",
+              color: "#fff",
+              height: 40,
+              "&:hover": { backgroundColor: "#333" },
+            }}
+          >
+            Place Order
+          </Button>
+        </Box>
+      </Grid>
+    </Grid>
   );
 };
 
-export default CheckOut;  
+export default CheckOut;

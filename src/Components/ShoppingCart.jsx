@@ -52,7 +52,7 @@ const ShoppingCart = () => {
 
   return (
     <Box sx={{ padding: 7 }}>
-      <Typography variant="h4" sx={{ marginBottom: 4, color: "#2C3E50" }}>
+      <Typography variant="h4" sx={{ marginBottom: 4, }}>
         Checkout
       </Typography>
 
