@@ -1,209 +1,171 @@
-import React, { useState, useEffect } from "react";
-import Table from "@mui/material/Table";
-import TableBody from "@mui/material/TableBody";
-import TableCell from "@mui/material/TableCell";
-import TableContainer from "@mui/material/TableContainer";
-import TableHead from "@mui/material/TableHead";
-import TableRow from "@mui/material/TableRow";
-import Paper from "@mui/material/Paper";
-import Button from "@mui/material/Button";
-import Box from "@mui/material/Box";
-import Typography from "@mui/material/Typography";
-
-// Dummy data
-const dummyData = [
-  {
-    id: 1,
-    imageUrl:
-      "https://i.pinimg.com/736x/af/36/78/af36783a464d3b5163053258a042e625.jpg",
-    name: "Women Fit and Flare Brown Dress",
-    price: 200,
-    size: "medium",
-    description: "This is the description of Bag item 1.",
-    location: "colombo",
-    count: 1,
-  },
-  {
-    id: 2,
-    imageUrl:
-      "https://rukminim2.flixcart.com/image/612/612/xif0q/dress/k/a/k/l-vna1003027-vishudh-original-imagyxpgq9ywyhmu.jpeg?q=70",
-    name: "Women Fit and Flare Brown Dress",
-    price: 200,
-    size: "medium",
-    description: "This is the description of Bag item 1.",
-    location: "kandy",
-    count: 1,
-  },
-];
+import React, { useState } from "react";
+import {
+  Box,
+  Grid,
+  Typography,
+  Button,
+  IconButton,
+  CardMedia,
+  Divider,
+} from "@mui/material";
+import DeleteIcon from "@mui/icons-material/Delete";
+import AddIcon from "@mui/icons-material/Add";
+import RemoveIcon from "@mui/icons-material/Remove";
 
 const ShoppingCart = () => {
-  const [items, setItems] = useState([]);
-  const [subtotal, setSubtotal] = useState(0);
-  const deliveryFee = 5;
+  const [products, setProducts] = useState([
+    {
+      id: 1,
+      imageUrl: "https://i.pinimg.com/736x/af/36/78/af36783a464d3b5163053258a042e625.jpg",
+      name: "Women Fit and Flare Brown Dress",
+      price: 200,
+      size: "Medium",
+      count: 1,
+    },
+    {
+      id: 2,
+      imageUrl: "https://rukminim2.flixcart.com/image/612/612/xif0q/dress/k/a/k/l-vna1003027-vishudh-original-imagyxpgq9ywyhmu.jpeg?q=70",
+      name: "Women Fit and Flare Brown Dress",
+      price: 150,
+      size: "Medium",
+      count: 1,
+    },
+  ]);
 
-  // Simulate fetching data from an API
-  useEffect(() => {
-    setTimeout(() => {
-      setItems(dummyData); // Simulate API response
-    }, 1000);
-  }, []);
-
-  // Recalculate subtotal when items change
-  useEffect(() => {
-    const newSubtotal = items.reduce((total, item) => total + item.price * item.count, 0);
-    setSubtotal(newSubtotal);
-  }, [items]);
-
-  // Handle count change
-  const handleCountChange = (id, newCount) => {
-    setItems((prevItems) =>
-      prevItems.map((item) =>
-        item.id === id ? { ...item, count: newCount } : item
+  const updateQuantity = (id, delta) => {
+    setProducts((prevProducts) =>
+      prevProducts.map((product) =>
+        product.id === id
+          ? { ...product, count: Math.max(1, product.count + delta) }
+          : product
       )
     );
   };
 
-  // Handle removing an item
-  const handleRemoveItem = (id) => {
-    setItems(items.filter((item) => item.id !== id));
+  const deleteProduct = (id) => {
+    setProducts((prevProducts) => prevProducts.filter((product) => product.id !== id));
   };
 
-  if (items.length === 0) {
-    return <div>No items available.</div>;
-  }
+  const calculateTotal = () => {
+    return products.reduce((total, product) => total + product.price * product.count, 0);
+  };
 
   return (
-    <Box padding="16px">
-      {/* Cart Items Table */}
-      <TableContainer component={Paper} sx={{ marginBottom: "16px" }}>
-        <Table>
-          <TableHead>
-            <TableRow>
-              <TableCell>Image</TableCell>
-              <TableCell>Name</TableCell>
-              <TableCell>Count</TableCell>
-              <TableCell>Price</TableCell>
-              <TableCell>Size</TableCell>
-              <TableCell>Description</TableCell>
-              <TableCell>Location</TableCell>
-              <TableCell>Action</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {items.map((item) => (
-              <TableRow key={item.id}>
-                <TableCell>
-                  <img
-                    src={item.imageUrl}
-                    alt={item.name}
-                    style={{ width: "50px", height: "50px" }}
+    <Box sx={{ padding: 7 }}>
+      <Typography variant="h4" sx={{ marginBottom: 4, color: "#2C3E50" }}>
+        Checkout
+      </Typography>
+
+      <Grid container spacing={2}>
+        {/* Products Table */}
+        <Grid item xs={8}>
+          <Box sx={{ border: "1px solid #ddd", borderRadius: 1 }}>
+            <Box
+              sx={{
+                display: "flex",
+                justifyContent: "space-between",
+                padding: 1,
+                borderBottom: "1px solid #ddd",
+                backgroundColor: "#f5f5f5",
+              }}
+            >
+              <Typography sx={{ flex: 2, fontWeight: "bold" }}>Products</Typography>
+              <Typography sx={{ width: "120px", textAlign: "center", fontWeight: "bold" }}>Price</Typography>
+              <Typography sx={{ width: "120px", textAlign: "center", fontWeight: "bold" }}>Quantity</Typography>
+              <Typography sx={{ width: "120px", textAlign: "center", fontWeight: "bold" }}>Subtotal</Typography>
+              <Box sx={{ width: "40px" }} />
+            </Box>
+
+            {products.map((product) => (
+              <Box
+                key={product.id}
+                sx={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                  padding: 1,
+                  borderBottom: "1px solid #ddd",
+                }}
+              >
+                <Box sx={{ display: "flex", flex: 1.5, alignItems: "center" }}>
+                  <CardMedia
+                    component="img"
+                    image={product.imageUrl}
+                    alt={product.name}
+                    sx={{ width: 60, height: 60, borderRadius: 1, marginRight: 3 }}
                   />
-                </TableCell>
-                <TableCell>{item.name}</TableCell>
-                <TableCell>
-                  <Box display="flex" alignItems="center" gap={1}>
-                    <Button
-                      size="small"
-                      onClick={() =>
-                        handleCountChange(item.id, Math.max(1, item.count - 1))
-                      }
-                    >
-                      -
-                    </Button>
-                    <Typography>{item.count}</Typography>
-                    <Button
-                      size="small"
-                      onClick={() => handleCountChange(item.id, item.count + 1)}
-                    >
-                      +
-                    </Button>
+                  <Box>
+                    <Typography>{product.name}</Typography>
+                    <Typography variant="body2" sx={{ color: "#777" }}>
+                      Size: {product.size}
+                    </Typography>
                   </Box>
-                </TableCell>
-                <TableCell>
-                  ${item.price * item.count}
-                </TableCell>
-                <TableCell>{item.size}</TableCell>
-                <TableCell>{item.description}</TableCell>
-                <TableCell>{item.location}</TableCell>
-                <TableCell>
-                    <Button
-                        variant="contained"
-                        color="black"
-                        onClick={() => handleRemoveItem(item.id)}
-                        sx={{
-                          backgroundColor: "black", 
-                          color: "white", // Make the text white
-                          "&:hover": {
-                            backgroundColor: "darkgray", // Hover effect with dark gray background
-                          },
-                        }}
-                      >
-                        Remove
-                 </Button>
+                </Box>
 
-                </TableCell>
-              </TableRow>
+                <Typography sx={{ width: "120px", textAlign: "center" }}>
+                  ${product.price.toFixed(2)}
+                </Typography>
+
+                <Box sx={{ display: "flex", alignItems: "center", width: "120px", justifyContent: "center" }}>
+                  <IconButton size="small" onClick={() => updateQuantity(product.id, -1)}>
+                    <RemoveIcon />
+                  </IconButton>
+                  <Typography sx={{ marginX: 1 }}>{product.count}</Typography>
+                  <IconButton size="small" onClick={() => updateQuantity(product.id, 1)}>
+                    <AddIcon />
+                  </IconButton>
+                </Box>
+
+                <Typography sx={{ width: "120px", textAlign: "center" }}>
+                  ${(product.price * product.count).toFixed(2)}
+                </Typography>
+
+                <IconButton onClick={() => deleteProduct(product.id)}>
+                  <DeleteIcon color="error" />
+                </IconButton>
+              </Box>
             ))}
-          </TableBody>
-        </Table>
-      </TableContainer>
+          </Box>
+        </Grid>
 
-      {/* Cart Totals Section */}
-      <Paper
-        elevation={3}
-        sx={{
-          flex: 0.4, // Increased width for cart totals
-          p: 6, // Padding as per the requested style
-          display: "flex",
-          flexDirection: "column",
-          gap: 4,
-          maxWidth: "400px",
-          marginLeft: "0", // Align to the left
-        }}
-      >
-        <Typography
-          variant="h5"
-          sx={{ borderBottom: "1px solid #ccc", paddingBottom: "12px" }}
-          gutterBottom
-        >
-          Cart Totals
-        </Typography>
-        <Box display="flex" justifyContent="space-between" alignItems="center">
-          <Typography>Subtotal:</Typography>
-          <Typography>${subtotal}</Typography>
-        </Box>
-        <Box display="flex" justifyContent="space-between" alignItems="center">
-          <Typography>Delivery Fee:</Typography>
-          <Typography>${deliveryFee}</Typography>
-        </Box>
-        <Box
-          display="flex"
-          justifyContent="space-between"
-          alignItems="center"
-          fontWeight="bold"
-        >
-          <Typography>Total:</Typography>
-          <Typography>${subtotal + deliveryFee}</Typography>
-        </Box>
-        <Button
-          variant="contained"
-          color="primary"
-          fullWidth
-          sx={{
-            backgroundColor: "#ff4500",
-            "&:hover": {
-              backgroundColor: "#e63900",
-            },
-            alignSelf: "center",
-            marginTop: "16px",
-          }}
-        >
-          Proceed to Checkout
-        </Button>
-      </Paper>
+        {/* Summary Section */}
+        <Grid item xs={4}>
+          <Box sx={{ border: "1px solid #ddd", padding: 2, borderRadius: 1 }}>
+            <Box sx={{ display: "flex", justifyContent: "space-between", marginBottom: 2 }}>
+              <Typography>Subtotal</Typography>
+              <Typography>${calculateTotal().toFixed(2)}</Typography>
+            </Box>
+
+            <Box sx={{ display: "flex", justifyContent: "space-between", marginBottom: 2 }}>
+              <Typography>Delivery Charge</Typography>
+              <Typography>$5.00</Typography>
+            </Box>
+
+            <Divider sx={{ marginBottom: 2 }} />
+
+            <Box sx={{ display: "flex", justifyContent: "space-between", marginBottom: 10 , marginTop: 3}}>
+              <Typography variant="h6">Grand Total</Typography>
+              <Typography variant="h6">${(calculateTotal() + 5).toFixed(2)}</Typography>
+            </Box>
+
+            <Button
+              variant="contained"
+              fullWidth
+              sx={{
+                textTransform: "none",
+                backgroundColor: "#000",
+                color: "#fff",
+                height: 40,
+                "&:hover": { backgroundColor: "#333" },
+              }}
+            >
+              Proceed to Checkout
+            </Button>
+          </Box>
+        </Grid>
+      </Grid>
     </Box>
   );
 };
 
 export default ShoppingCart;
-
