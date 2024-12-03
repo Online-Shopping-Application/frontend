@@ -1,5 +1,4 @@
-import * as React from 'react';
-import PropTypes from 'prop-types';
+import React from 'react';
 import Box from '@mui/material/Box';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
@@ -8,16 +7,15 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TablePagination from '@mui/material/TablePagination';
 import TableRow from '@mui/material/TableRow';
-import Toolbar from '@mui/material/Toolbar';
-import Typography from '@mui/material/Typography';
 import Paper from '@mui/material/Paper';
-import Checkbox from '@mui/material/Checkbox';
-import IconButton from '@mui/material/IconButton';
-import Tooltip from '@mui/material/Tooltip';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import Switch from '@mui/material/Switch';
-import DeleteIcon from '@mui/icons-material/Delete';
-import { LuClipboardEdit } from "react-icons/lu";
+import SearchIcon from '@mui/icons-material/Search';
+import TextField from '@mui/material/TextField';
+import InputAdornment from '@mui/material/InputAdornment';
+import TableSortLabel from '@mui/material/TableSortLabel';
+import Button from '@mui/material/Button';
+import { useNavigate } from 'react-router-dom';
+import './SellerTable.css';
+
 
 function createData(id, name, email) {
   return {
@@ -28,46 +26,29 @@ function createData(id, name, email) {
 }
 
 const rows = [
-  createData(1, 'Seller One', 'seller1@example.com'),
-  createData(2, 'Seller Two', 'seller2@example.com'),
-  createData(3, 'Seller Three', 'seller3@example.com'),
-  createData(4, 'Seller Four', 'seller4@example.com'),
-  createData(5, 'Seller Five', 'seller5@example.com'),
-  createData(6, 'Seller Six', 'seller6@example.com'),
-  createData(3, 'Seller Three', 'seller3@example.com'),
-  createData(4, 'Seller Four', 'seller4@example.com'),
-  createData(5, 'Seller Five', 'seller5@example.com'),
-  createData(6, 'Seller Six', 'seller6@example.com'),
-  createData(5, 'Seller Five', 'seller5@example.com'),
-  createData(6, 'Seller Six', 'seller6@example.com'),
+  createData('S001', 'Seller One', 'seller1@example.com'),
+  createData('S002', 'Seller Two', 'seller2@example.com'),
+  createData('S003', 'Seller Three', 'seller3@example.com'),
+  createData('S004', 'Seller Four', 'seller4@example.com'),
+  createData('S005', 'Seller Five', 'seller5@example.com'),
+  createData('S006', 'Seller Six', 'seller6@example.com'),
+  createData('S007', 'Seller Three', 'seller3@example.com'),
+  createData('S008', 'Seller Four', 'seller4@example.com'),
+  createData('S009', 'Seller Five', 'seller5@example.com'),
+  createData('S010', 'Seller Six', 'seller6@example.com'),
+  createData('S011', 'Seller Five', 'seller5@example.com'),
+  createData('S012', 'Seller Six', 'seller6@example.com'),
 ];
 
-function EnhancedTable() {
-  const [selected, setSelected] = React.useState([]);
+function SellerTable() {
+  const [selected] = React.useState([]);
   const [page, setPage] = React.useState(0);
-  const [dense, setDense] = React.useState(false);
+  const [dense] = React.useState(false);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
-
-  const handleSelectAllClick = (event) => {
-    if (event.target.checked) {
-      const newSelected = rows.map((n) => n.id);
-      setSelected(newSelected);
-      return;
-    }
-    setSelected([]);
-  };
-
-  const handleClick = (event, id) => {
-    const selectedIndex = selected.indexOf(id);
-    let newSelected = [];
-
-    if (selectedIndex === -1) {
-      newSelected = newSelected.concat(selected, id);
-    } else {
-      newSelected = newSelected.concat(selected.slice(0, selectedIndex), selected.slice(selectedIndex + 1));
-    }
-    setSelected(newSelected);
-  };
+  const [searchQuery, setSearchQuery] = React.useState('');
+  const [order, setOrder] = React.useState('asc');
+  const [orderBy, setOrderBy] = React.useState('id');
+  const navigate = useNavigate();
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -78,27 +59,84 @@ function EnhancedTable() {
     setPage(0);
   };
 
-  const handleChangeDense = (event) => {
-    setDense(event.target.checked);
+  const handleSearchChange = (event) => {
+    setSearchQuery(event.target.value);
   };
 
-  const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - rows.length) : 0;
+  const handleRequestSort = (event, property) => {
+    const isAsc = orderBy === property && order === 'asc';
+    setOrder(isAsc ? 'desc' : 'asc');
+    setOrderBy(property);
+  };
 
-  const visibleRows = React.useMemo(() => rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage), [page, rowsPerPage]);
+  const handleViewProducts = (id) => {
+    navigate(`/ProductList/${id}`); // Navigate to the product table with the seller ID
+  };
+
+  const filteredRows = rows.filter((row) => {
+    return (
+      row.id.toString().includes(searchQuery) || 
+      row.name.toLowerCase().includes(searchQuery.toLowerCase()) 
+    );
+  });
+
+
+  const sortedRows = React.useMemo(() => {
+    return filteredRows.sort((a, b) => {
+      if (orderBy === 'id') {
+        return order === 'asc' ? a.id.localeCompare(b.id) : b.id.localeCompare(a.id);
+      } 
+      return 0;
+    });
+  }, [filteredRows, order, orderBy]);
+
+
+  const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - sortedRows.length) : 0;
+
+  const visibleRows = React.useMemo(() => sortedRows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage), [page, rowsPerPage, sortedRows]);
 
   return (
-    <Box sx={{ width: '100%' }}>
-      <Paper sx={{ width: '100%', mb: 2 }}>
-        <TableContainer>
-          <Table sx={{ minWidth: 750 }} aria-labelledby="tableTitle" size={dense ? 'small' : 'medium'} >
+    <Box sx={{ width: '100%'}}>
+        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
+      <h1>Sellers List</h1>
+      <TextField
+        value={searchQuery}
+        onChange={handleSearchChange}
+        placeholder="Search by id or name"
+        sx={{ marginTop: '30px', width: '250px' }}
+        InputProps={{
+          startAdornment: (
+            <InputAdornment position="start">
+              <SearchIcon />
+            </InputAdornment>
+          ),
+          sx: { height: '40px' },
+        }}
+      />
+      </Box>
+      <Paper sx={{ width: '100%'}}>
+        <TableContainer sx={{ maxHeight: 470 }}>
+          <Table stickyHeader sx={{ minWidth: 750 }} aria-labelledby="tableTitle" size={dense ? 'small' : 'medium'} >
             <TableHead>
               <TableRow>
-                
-                <TableCell>Seller id</TableCell>
-                <TableCell>Seller name</TableCell>
-                <TableCell>Email</TableCell>
-                <TableCell>Actions</TableCell>
-
+                <TableCell sx={{ fontWeight: 'bold' }}>
+                <TableSortLabel
+                    active={orderBy === 'id'}
+                    direction={orderBy === 'id' ? order : 'asc'}
+                    onClick={(event) => handleRequestSort(event, 'id')}
+                  >
+                    Seller Id
+                  </TableSortLabel>
+                </TableCell>
+                <TableCell sx={{ fontWeight: 'bold' }}>
+                    Seller Name
+                </TableCell>
+                <TableCell sx={{ fontWeight: 'bold' }}> 
+                    Email
+                </TableCell>
+                <TableCell sx={{ paddingLeft: '220px', fontWeight: 'bold' }}>
+                    Actions
+                </TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
@@ -107,20 +145,21 @@ function EnhancedTable() {
                 const labelId = `seller-checkbox-${row.id}`;
 
                 return (
-                  <TableRow>
+                  <TableRow key={row.id} selected={isItemSelected}>
                     <TableCell>{row.id}</TableCell>
                     <TableCell>{row.name}</TableCell>
                     <TableCell>{row.email}</TableCell>
-                    <TableCell>
-                      <Tooltip title="Disable account">
-                        <IconButton>
-                          <DeleteIcon />
-                          <LuClipboardEdit/>
-                        </IconButton>
-                      </Tooltip>
+                    <TableCell sx={{ display: 'flex', justifyContent: 'flex-end' }}>
+                      <Button className='disable-account-button' variant="outlined">
+                        Disable Account
+                      </Button>
+                      <Box sx={{ width: 10 }} /> {/* Add space between buttons */}
+                      <Button className='view-products-button' variant="outlined" onClick={() => handleViewProducts(row.id)}>
+                        View Products
+                      </Button>
                     </TableCell> 
                   </TableRow>
-                )
+                );
               })}
               {emptyRows > 0 && (
                 <TableRow style={{ height: (dense ? 33 : 53) * emptyRows }}>
@@ -139,10 +178,9 @@ function EnhancedTable() {
           onPageChange={handleChangePage}
           onRowsPerPageChange={handleChangeRowsPerPage}
         />
-      </Paper>
-      
+      </Paper>   
     </Box>
   );
 }
 
-export default EnhancedTable;
+export default SellerTable;

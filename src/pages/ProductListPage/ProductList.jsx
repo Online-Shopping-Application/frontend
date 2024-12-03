@@ -1,6 +1,6 @@
 import React, {useEffect} from 'react'
-import SellerTable from '../../components/SellerList/SellerTable';
 import Layout from '../../components/PageLayout/Layout';
+import ProductTable from '../../components/ProductList/ProductTable';
 
 
 export default function SellerList() {
@@ -14,9 +14,10 @@ export default function SellerList() {
     return (
         <div>
            <Layout>
-                <SellerTable />
+                <ProductTable />
            </Layout>
         </div>
   )
 }
+
 

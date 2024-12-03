@@ -37,9 +37,7 @@ export default function ProfileMenu() {
         <Box sx={{ display: 'flex', justifyContent: 'flex-end', width: '100%' }}>
             <IconButton
                 edge="end"
-                aria-controls="profile-menu"
-                aria-haspopup="true"
-                onClick={handleMenuOpen}
+                aria-label="notifications"
                 color="inherit"
                 sx={{ mr: 2 }}
             >
@@ -47,6 +45,7 @@ export default function ProfileMenu() {
                     <NotificationsIcon />
                 </Badge>
             </IconButton>
+
             <IconButton
                 edge="end"
                 aria-controls="profile-menu"

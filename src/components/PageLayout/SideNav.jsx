@@ -85,7 +85,7 @@ export default function SideNav({ mobileOpen, handleDrawerToggle }) {
             }} />
           </ListItemButton>
 
-          <ListItemButton
+         {/*  <ListItemButton
             disableRipple
             style={{
               paddingLeft: '25px',
@@ -106,11 +106,11 @@ export default function SideNav({ mobileOpen, handleDrawerToggle }) {
                 fontSize: '18px'
               }
             }} />
-          </ListItemButton>
+          </ListItemButton> */}
         </div>
 
 
-        <div>
+        {/* <div>
           <ListItemButton
             disableRipple
             style={{
@@ -137,7 +137,7 @@ export default function SideNav({ mobileOpen, handleDrawerToggle }) {
               }}
             />
           </ListItemButton>
-        </div>
+        </div> */}
       </List>
     </>
   );
