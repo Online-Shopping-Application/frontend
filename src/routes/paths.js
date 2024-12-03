@@ -7,6 +7,7 @@ export const PATH_PUBLIC = {
 }
 
 export const PATH_DASHBOARD = {
-    dashboard:'/search',
-    test:'/test',
-}
+    dashboard: '/dashboard',
+    orders: '/orders',
+    refundRequest: '/refund-request'
+  }

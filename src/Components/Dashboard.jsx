@@ -2,30 +2,26 @@ import React from 'react';
 import { Box } from '@mui/material';
 import { Outlet } from 'react-router-dom';
 import Header from './Header';
-import Sidebar from './Sidebar';
+import SidebarComponent from './SidebarComponent';
 
-const Dashboard = () => {
-  return React.createElement(
-    Box,
-    { sx: { display: 'flex' } },
-    React.createElement(Header),
-    React.createElement(Sidebar),
-    React.createElement(
-      Box,
-      {
-        component: 'main',
-        sx: {
+const Dashboard = () => { 
+  return (
+    <Box sx={{ display: 'flex', backgroundColor: '#fff' }}>
+      <Header />
+      <SidebarComponent />
+      <Box
+        component="main"
+        sx={{
           flexGrow: 1,
-          p: 3,
-          mt: '64px', // Header height
-          ml: '240px', // Sidebar width
-          backgroundColor: '#f5f5f5',
-          minHeight: '100vh',
-          marginLeft: '30px',
-        },
-      },
-      React.createElement(Outlet)
-    )
+          p: '78px',
+          backgroundColor: '#fff',
+          width: '85vw',
+          height: '100vh',
+        }}
+      >
+        <Outlet />
+      </Box>
+    </Box>
   );
 };
 
