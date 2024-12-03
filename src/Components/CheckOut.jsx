@@ -78,7 +78,7 @@ const CheckOut = () => {
     <Grid container spacing={4} sx={{ margin: 0, width: "100%", padding: 0 }}>
       {/* Address List */}
       <Grid item xs={12}>
-        <Typography variant="h4" sx={{ marginBottom: 4 }}>
+        <Typography variant="h5" sx={{ marginBottom: 4 }}>
           Shipping Address
         </Typography>
         {addresses.map((address) => (

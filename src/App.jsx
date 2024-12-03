@@ -4,6 +4,7 @@ import ShoppingCart from './Components/ShoppingCart';
 import CheckOut from './Components/CheckOut';
 import MyOrder from './Components/MyOrder';
 import ShoppingPage from './Pages/ShoppingPage';
+import SelectItem from './Components/SelectItem';
 
 
 
@@ -17,6 +18,7 @@ export default function App() {
       <Route path="/shopping-cart" element={<ShoppingCart />} /> 
       <Route path="/my-order" element={<MyOrder />} />
       <Route path="/shopping-page" element={<ShoppingPage />} />
+      <Route path="/select-item" element={<SelectItem />} />
      
     </Routes>
    

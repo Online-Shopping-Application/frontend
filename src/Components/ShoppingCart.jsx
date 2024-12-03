@@ -1,3 +1,4 @@
+
 import React, { useState } from "react";
 import {
   Box,
@@ -5,11 +6,15 @@ import {
   Typography,
   IconButton,
   CardMedia,
-  Divider,
+  Checkbox,
 } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import AddIcon from "@mui/icons-material/Add";
 import RemoveIcon from "@mui/icons-material/Remove";
+import SelectItem from "./SelectItem";
+import { useNavigate } from 'react-router-dom';
+import { Button } from "@mui/material";
+
 
 const ShoppingCart = () => {
   const [products, setProducts] = useState([
@@ -35,6 +40,8 @@ const ShoppingCart = () => {
     },
   ]);
 
+  const [selectedProducts, setSelectedProducts] = useState([]);
+
   const updateQuantity = (id, delta) => {
     setProducts((prevProducts) =>
       prevProducts.map((product) =>
@@ -47,23 +54,33 @@ const ShoppingCart = () => {
 
   const deleteProduct = (id) => {
     setProducts((prevProducts) => prevProducts.filter((product) => product.id !== id));
+    setSelectedProducts((prevSelected) => prevSelected.filter((item) => item.productID !== id));
   };
 
-  const calculateTotal = () => {
-    return products.reduce(
-      (total, product) =>
-        total +
-        (product.price * product.count -
-          product.discount +
-          product.deliveryCharge),
-      0
-    );
+  const handleCheckboxChange = (product) => {
+    setSelectedProducts((prevSelected) => {
+      const isAlreadySelected = prevSelected.some((item) => item.productID === product.id);
+      const updatedSelectedProducts = isAlreadySelected
+        ? prevSelected.filter((item) => item.productID !== product.id)
+        : [...prevSelected, { productID: product.id, count: product.count }];
+
+      // Log to console when updated
+      console.log("Selected Products (ShoppingCart):", JSON.stringify(updatedSelectedProducts, null, 2));
+
+      return updatedSelectedProducts;
+    });
   };
+  const navigate = useNavigate();
+  const handleData = () => {
+    navigate('/select-item', { state: { selectedProducts } });
+  }
+    
+  
 
   return (
     <Box sx={{ padding: 3 }}>
       <Typography variant="h4" sx={{ marginBottom: 4 }}>
-        Checkout
+        Shopping Cart
       </Typography>
 
       <Grid container spacing={2}>
@@ -88,19 +105,16 @@ const ShoppingCart = () => {
               }}
             >
               <Typography sx={{ flex: 2, fontWeight: "bold" }}>Products</Typography>
-              <Typography sx={{ width: "120px", textAlign: "center", fontWeight: "bold" }}>
+              <Typography sx={{ width: "150px", textAlign: "center", fontWeight: "bold" }}>
                 Price
               </Typography>
-              <Typography sx={{ width: "120px", textAlign: "center", fontWeight: "bold" }}>
+              <Typography sx={{ width: "140px", textAlign: "center", fontWeight: "bold" }}>
                 Quantity
               </Typography>
-              <Typography sx={{ width: "120px", textAlign: "center", fontWeight: "bold" }}>
-                Delivery
-              </Typography>
-              <Typography sx={{ width: "120px", textAlign: "center", fontWeight: "bold" }}>
+              <Typography sx={{ width: "60px", textAlign: "center", fontWeight: "bold" }}>
                 Discount
               </Typography>
-              <Typography sx={{ width: "120px", textAlign: "center", fontWeight: "bold" }}>
+              <Typography sx={{ width: "200px", textAlign: "center", fontWeight: "bold" }}>
                 Subtotal
               </Typography>
               <Box sx={{ width: "40px" }} />
@@ -164,10 +178,6 @@ const ShoppingCart = () => {
                   </Box>
 
                   <Typography sx={{ width: "120px", textAlign: "center" }}>
-                    ${product.deliveryCharge.toFixed(2)}
-                  </Typography>
-
-                  <Typography sx={{ width: "120px", textAlign: "center" }}>
                     -${product.discount.toFixed(2)}
                   </Typography>
 
@@ -176,32 +186,47 @@ const ShoppingCart = () => {
                   </Typography>
 
                   <IconButton onClick={() => deleteProduct(product.id)}>
-                    <DeleteIcon color="error" />
+                    <DeleteIcon color="error"  sx={{ color: "black" }} />
                   </IconButton>
+
+                  <Checkbox
+                    checked={selectedProducts.some((item) => item.productID === product.id)}
+                    onChange={() => handleCheckboxChange(product)}
+                    sx={{
+                      '&.Mui-checked': {
+                        color: 'black',
+                      },
+                    }}
+
+                  />
                 </Box>
               );
             })}
-
-            <Box
-              sx={{
-                display: "flex",
-                justifyContent: "flex-end",
-                alignItems: "center",
-                padding: 2,
-                borderTop: "1px solid #ddd",
-                backgroundColor: "#f9f9f9",
-              }}
-            >
-              <Typography variant="h6" sx={{ marginRight: 5, fontWeight: "bold" }}>
-                Grand Total:
-              </Typography>
-              <Typography variant="h6">
-                ${calculateTotal().toFixed(2)}
-              </Typography>
-            </Box>
+            {/* <button onClick={handleData}>checkout</button> */}
           </Box>
         </Grid>
       </Grid>
+                <Box sx={{ display: "flex", justifyContent: "center", marginTop: 3 }}>
+            <Button
+              onClick={handleData}
+              variant="contained"
+              sx={{
+                backgroundColor: "black",
+                color: "white",
+                width: "20%",
+                padding: "12px",
+                borderRadius: "4px",
+                "&:hover": {
+                  backgroundColor: "#333",
+                },
+              }}
+            >
+              Checkout
+            </Button>
+          </Box>
+
+      {/* <SelectItem selectedProducts={selectedProducts} /> */}
+
     </Box>
   );
 };
