@@ -3,7 +3,6 @@ import {
   Box,
   Grid,
   Typography,
-  Button,
   IconButton,
   CardMedia,
   Divider,
@@ -21,6 +20,8 @@ const ShoppingCart = () => {
       price: 200,
       size: "Medium",
       count: 1,
+      deliveryCharge: 10,
+      discount: 20,
     },
     {
       id: 2,
@@ -29,6 +30,8 @@ const ShoppingCart = () => {
       price: 150,
       size: "Medium",
       count: 1,
+      deliveryCharge: 5,
+      discount: 15,
     },
   ]);
 
@@ -47,120 +50,155 @@ const ShoppingCart = () => {
   };
 
   const calculateTotal = () => {
-    return products.reduce((total, product) => total + product.price * product.count, 0);
+    return products.reduce(
+      (total, product) =>
+        total +
+        (product.price * product.count -
+          product.discount +
+          product.deliveryCharge),
+      0
+    );
   };
 
   return (
-    <Box sx={{ padding: 7 }}>
-      <Typography variant="h4" sx={{ marginBottom: 4, }}>
+    <Box sx={{ padding: 3 }}>
+      <Typography variant="h4" sx={{ marginBottom: 4 }}>
         Checkout
       </Typography>
 
       <Grid container spacing={2}>
-        {/* Products Table */}
-        <Grid item xs={8}>
-          <Box sx={{ border: "1px solid #ddd", borderRadius: 1 }}>
+        <Grid item xs={12}>
+          <Box
+            sx={{
+              padding: 2,
+              backgroundColor: "#fff",
+              borderRadius: 1,
+              boxShadow: 2,
+            }}
+          >
             <Box
               sx={{
                 display: "flex",
+                flexDirection: { xs: "column", md: "row" },
                 justifyContent: "space-between",
+                alignItems: { xs: "flex-start", md: "center" },
                 padding: 1,
                 borderBottom: "1px solid #ddd",
                 backgroundColor: "#f5f5f5",
               }}
             >
               <Typography sx={{ flex: 2, fontWeight: "bold" }}>Products</Typography>
-              <Typography sx={{ width: "120px", textAlign: "center", fontWeight: "bold" }}>Price</Typography>
-              <Typography sx={{ width: "120px", textAlign: "center", fontWeight: "bold" }}>Quantity</Typography>
-              <Typography sx={{ width: "120px", textAlign: "center", fontWeight: "bold" }}>Subtotal</Typography>
+              <Typography sx={{ width: "120px", textAlign: "center", fontWeight: "bold" }}>
+                Price
+              </Typography>
+              <Typography sx={{ width: "120px", textAlign: "center", fontWeight: "bold" }}>
+                Quantity
+              </Typography>
+              <Typography sx={{ width: "120px", textAlign: "center", fontWeight: "bold" }}>
+                Delivery
+              </Typography>
+              <Typography sx={{ width: "120px", textAlign: "center", fontWeight: "bold" }}>
+                Discount
+              </Typography>
+              <Typography sx={{ width: "120px", textAlign: "center", fontWeight: "bold" }}>
+                Subtotal
+              </Typography>
               <Box sx={{ width: "40px" }} />
             </Box>
 
-            {products.map((product) => (
-              <Box
-                key={product.id}
-                sx={{
-                  display: "flex",
-                  justifyContent: "space-between",
-                  alignItems: "center",
-                  padding: 1,
-                  borderBottom: "1px solid #ddd",
-                }}
-              >
-                <Box sx={{ display: "flex", flex: 1.5, alignItems: "center" }}>
-                  <CardMedia
-                    component="img"
-                    image={product.imageUrl}
-                    alt={product.name}
-                    sx={{ width: 60, height: 60, borderRadius: 1, marginRight: 3 }}
-                  />
-                  <Box>
-                    <Typography>{product.name}</Typography>
-                    <Typography variant="body2" sx={{ color: "#777" }}>
-                      Size: {product.size}
-                    </Typography>
+            {products.map((product) => {
+              const subtotal =
+                product.price * product.count - product.discount + product.deliveryCharge;
+
+              return (
+                <Box
+                  key={product.id}
+                  sx={{
+                    display: "flex",
+                    flexDirection: { xs: "column", md: "row" },
+                    justifyContent: "space-between",
+                    alignItems: { xs: "flex-start", md: "center" },
+                    padding: 1,
+                    borderBottom: "1px solid #ddd",
+                  }}
+                >
+                  <Box sx={{ display: "flex", flex: 1.5, alignItems: "center" }}>
+                    <CardMedia
+                      component="img"
+                      image={product.imageUrl}
+                      alt={product.name}
+                      sx={{
+                        width: { xs: 50, md: 60 },
+                        height: { xs: 50, md: 60 },
+                        borderRadius: 1,
+                        marginRight: 3,
+                      }}
+                    />
+                    <Box>
+                      <Typography>{product.name}</Typography>
+                      <Typography variant="body2" sx={{ color: "#777" }}>
+                        Size: {product.size}
+                      </Typography>
+                    </Box>
                   </Box>
-                </Box>
 
-                <Typography sx={{ width: "120px", textAlign: "center" }}>
-                  ${product.price.toFixed(2)}
-                </Typography>
+                  <Typography sx={{ width: "120px", textAlign: "center" }}>
+                    ${product.price.toFixed(2)}
+                  </Typography>
 
-                <Box sx={{ display: "flex", alignItems: "center", width: "120px", justifyContent: "center" }}>
-                  <IconButton size="small" onClick={() => updateQuantity(product.id, -1)}>
-                    <RemoveIcon />
+                  <Box
+                    sx={{
+                      display: "flex",
+                      alignItems: "center",
+                      width: "120px",
+                      justifyContent: "center",
+                    }}
+                  >
+                    <IconButton size="small" onClick={() => updateQuantity(product.id, -1)}>
+                      <RemoveIcon />
+                    </IconButton>
+                    <Typography sx={{ marginX: 1 }}>{product.count}</Typography>
+                    <IconButton size="small" onClick={() => updateQuantity(product.id, 1)}>
+                      <AddIcon />
+                    </IconButton>
+                  </Box>
+
+                  <Typography sx={{ width: "120px", textAlign: "center" }}>
+                    ${product.deliveryCharge.toFixed(2)}
+                  </Typography>
+
+                  <Typography sx={{ width: "120px", textAlign: "center" }}>
+                    -${product.discount.toFixed(2)}
+                  </Typography>
+
+                  <Typography sx={{ width: "120px", textAlign: "center" }}>
+                    ${subtotal.toFixed(2)}
+                  </Typography>
+
+                  <IconButton onClick={() => deleteProduct(product.id)}>
+                    <DeleteIcon color="error" />
                   </IconButton>
-                  <Typography sx={{ marginX: 1 }}>{product.count}</Typography>
-                  <IconButton size="small" onClick={() => updateQuantity(product.id, 1)}>
-                    <AddIcon />
-                  </IconButton>
                 </Box>
+              );
+            })}
 
-                <Typography sx={{ width: "120px", textAlign: "center" }}>
-                  ${(product.price * product.count).toFixed(2)}
-                </Typography>
-
-                <IconButton onClick={() => deleteProduct(product.id)}>
-                  <DeleteIcon color="error" />
-                </IconButton>
-              </Box>
-            ))}
-          </Box>
-        </Grid>
-
-        {/* Summary Section */}
-        <Grid item xs={4}>
-          <Box sx={{ border: "1px solid #ddd", padding: 2, borderRadius: 1 }}>
-            <Box sx={{ display: "flex", justifyContent: "space-between", marginBottom: 2 }}>
-              <Typography>Subtotal</Typography>
-              <Typography>${calculateTotal().toFixed(2)}</Typography>
-            </Box>
-
-            <Box sx={{ display: "flex", justifyContent: "space-between", marginBottom: 2 }}>
-              <Typography>Delivery Charge</Typography>
-              <Typography>$5.00</Typography>
-            </Box>
-
-            <Divider sx={{ marginBottom: 2 }} />
-
-            <Box sx={{ display: "flex", justifyContent: "space-between", marginBottom: 10 , marginTop: 3}}>
-              <Typography variant="h6">Grand Total</Typography>
-              <Typography variant="h6">${(calculateTotal() + 5).toFixed(2)}</Typography>
-            </Box>
-
-            <Button
-              variant="contained"
-              fullWidth
+            <Box
               sx={{
-                textTransform: "none",
-                backgroundColor: "#000",
-                color: "#fff",
-                height: 40,
-                "&:hover": { backgroundColor: "#333" },
+                display: "flex",
+                justifyContent: "flex-end",
+                alignItems: "center",
+                padding: 2,
+                borderTop: "1px solid #ddd",
+                backgroundColor: "#f9f9f9",
               }}
             >
-              Proceed to Checkout
-            </Button>
+              <Typography variant="h6" sx={{ marginRight: 5, fontWeight: "bold" }}>
+                Grand Total:
+              </Typography>
+              <Typography variant="h6">
+                ${calculateTotal().toFixed(2)}
+              </Typography>
+            </Box>
           </Box>
         </Grid>
       </Grid>
