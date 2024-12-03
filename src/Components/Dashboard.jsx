@@ -5,13 +5,16 @@ import Header from './Header';
 import Sidebar from './Sidebar';
 
 const Dashboard = () => {
-  return (
-    <Box sx={{ display: 'flex'}}>
-      <Header />
-      <Sidebar />
-      <Box
-        component="main"
-        sx={{
+  return React.createElement(
+    Box,
+    { sx: { display: 'flex' } },
+    React.createElement(Header),
+    React.createElement(Sidebar),
+    React.createElement(
+      Box,
+      {
+        component: 'main',
+        sx: {
           flexGrow: 1,
           p: 3,
           mt: '64px', // Header height
@@ -19,12 +22,10 @@ const Dashboard = () => {
           backgroundColor: '#f5f5f5',
           minHeight: '100vh',
           marginLeft: '30px',
-          
-        }}
-      >
-        <Outlet />
-      </Box>
-    </Box>
+        },
+      },
+      React.createElement(Outlet)
+    )
   );
 };
 
