@@ -14,9 +14,10 @@ import RemoveIcon from "@mui/icons-material/Remove";
 import SelectItem from "./SelectItem";
 import { useNavigate } from 'react-router-dom';
 import { Button } from "@mui/material";
+import axios from "axios";
 
 
-const ShoppingCart = ({ selectedProducts, setSelectedProducts }) => {
+const ShoppingCart = ({ userID, selectedProducts, setSelectedProducts }) => {
   const [products, setProducts] = useState([
     {
       id: 1,
@@ -41,7 +42,22 @@ const ShoppingCart = ({ selectedProducts, setSelectedProducts }) => {
   ]);
 
   
-  
+  useEffect(() => {
+    if (userID) {
+      fetchUserProducts(userID);
+    }
+  }, [userID]);
+
+  const fetchUserProducts = async (userID) => {
+    try {
+      const response = await axios.get(`https://api.example.com/user/${userID}/products`);
+      // Assuming the API returns an array of products
+      setProducts(response.data);
+    } catch (error) {
+      console.error("Error fetching user products:", error);
+    }
+  };
+
 
   const updateQuantity = (id, delta) => {
     setProducts((prevProducts) =>
@@ -53,28 +69,25 @@ const ShoppingCart = ({ selectedProducts, setSelectedProducts }) => {
     );
   };
 
-  const deleteProduct = (id) => {
-    setProducts((prevProducts) => prevProducts.filter((product) => product.id !== id));
-    setSelectedProducts((prevSelected) => prevSelected.filter((item) => item.productID !== id));
-  };
-
-  // const handleCheckboxChange = (product) => {
-  //   setSelectedProducts((prevSelected) => {
-  //     const isAlreadySelected = prevSelected.some((item) => item.productID === product.id);
-  //     const updatedSelectedProducts = isAlreadySelected
-  //       ? prevSelected.filter((item) => item.productID !== product.id)
-  //       : [...prevSelected, { productID: product.id, count: product.count }];
-
-  //     // Log to console when updated
-  //     console.log("Selected Products (ShoppingCart):", JSON.stringify(updatedSelectedProducts, null, 2));
-
-  //     return updatedSelectedProducts;
-  //   });
+  // const deleteProduct = (id) => {
+  //   setProducts((prevProducts) => prevProducts.filter((product) => product.id !== id));
+  //   setSelectedProducts((prevSelected) => prevSelected.filter((item) => item.productID !== id));
   // };
-  // const navigate = useNavigate();
-  // const handleData = () => {
-  //   navigate('/shopping-page', { state: { selectedProducts } });
-  // }
+  const deleteProduct = async (id) => {
+    try {
+      // Sending DELETE request to the server
+      const response = await axios.delete(`http://localhost:8082/api/cart/remove-from-cart/{userId}/{productId}`);
+      console.log("Product deleted successfully:", response.data);
+  
+      // Updating the local state to remove the product
+      setProducts((prevProducts) => prevProducts.filter((product) => product.id !== id));
+      setSelectedProducts((prevSelected) => prevSelected.filter((item) => item.productID !== id));
+    } catch (error) {
+      console.error("Error deleting product:", error);
+    }
+  };
+ 
+  
 
   const handleCheckboxChange = (product) => {
     setSelectedProducts((prevSelected) => {

@@ -1,8 +1,11 @@
+
+
 import React, { useState } from "react";
 import {
   Grid,
   TextField,
   Button,
+  IconButton,
   Typography,
   Box,
 } from "@mui/material";
@@ -110,38 +113,32 @@ const CheckOut = () => {
                   {address.postalCode}
                 </Typography>
               </Box>
+
               <Box display="flex" gap={1}>
                 <Button
-                  variant="outlined"
                   size="small"
-                  startIcon={<EditIcon />}
                   onClick={() => handleEdit(address)}
                   sx={{
-                    textTransform: "none",
-                    borderColor: "#000",
-                    color: "#000",
+                    minWidth: 0,
+                    padding: 1,
+                    borderRadius: "50%",
+                    backgroundColor: "transparent",
                     "&:hover": {
-                      borderColor: "#333",
-                      color: "#333",
+                      backgroundColor: "#f5f5f5",
                     },
                   }}
                 >
-                  Edit
+                  <EditIcon sx={{ color: "#000" }} />
                 </Button>
-                <Button
-                  variant="contained"
-                  size="small"
-                  startIcon={<DeleteIcon />}
+                <IconButton
                   onClick={() => handleDeleteAddress(address.id)}
                   sx={{
-                    textTransform: "none",
-                    backgroundColor: "#f44336",
-                    color: "#fff",
-                    "&:hover": { backgroundColor: "#d32f2f" },
+                    color: "#000",
+                  
                   }}
                 >
-                  Delete
-                </Button>
+                  <DeleteIcon />
+                </IconButton>
               </Box>
             </Box>
           </Box>
@@ -180,15 +177,19 @@ const CheckOut = () => {
           ))}
         </Grid>
         <Button
-          variant="contained"
+          variant="outlined"
           fullWidth
           onClick={handleAddAddress}
           sx={{
             textTransform: "none",
-            backgroundColor: "#000",
-            color: "#fff",
+            borderColor: "#000",
+            color: "#000",
             marginTop: 2,
-            "&:hover": { backgroundColor: "#333" },
+            "&:hover": {
+              borderColor: "#333",
+              color: "#333",
+             
+            },
           }}
         >
           {editingId ? "Save Changes" : "Add New Address"}

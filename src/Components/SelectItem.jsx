@@ -88,16 +88,16 @@ const SelectItem = () => {
               }}
             >
               <Typography sx={{ flex: 2, fontWeight: "bold" }}>Products</Typography>
-              <Typography sx={{ width: "150px", textAlign: "center", fontWeight: "bold" }}>
+              <Typography sx={{ width: "120px", textAlign: "center", fontWeight: "bold" }}>
                 Price
               </Typography>
-              <Typography sx={{ width: "140px", textAlign: "center", fontWeight: "bold" }}>
+              <Typography sx={{ width: "100px", textAlign: "center", fontWeight: "bold" }}>
                 Quantity
               </Typography>
-              <Typography sx={{ width: "60px", textAlign: "center", fontWeight: "bold" }}>
+              <Typography sx={{ width: "100px", textAlign: "center", fontWeight: "bold" }}>
                 Discount
               </Typography>
-              <Typography sx={{ width: "200px", textAlign: "center", fontWeight: "bold" }}>
+              <Typography sx={{ width: "100px", textAlign: "center", fontWeight: "bold" }}>
                 Subtotal
               </Typography>
             </Box>
@@ -164,45 +164,6 @@ const SelectItem = () => {
                 </Box>
               );
             })}
-
-               
-              <Typography
-                        sx={{
-                          fontWeight: "", // Makes the text bold
-                          fontSize: "1.2rem", // Slightly increases the font size
-                          color: "black", // Sets the text color
-                          display: "flex", // Aligns items in a row
-                          justifyContent: "flex-end", // Aligns content towards the right
-                          alignItems: "center", // Ensures vertical alignment
-                          padding: "10px 30px", // Adds padding for spacing
-                          backgroundColor: "#f5f5f5", // Adds a light background
-                          borderRadius: "8px", // Rounds corners
-                          boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.1)", // Adds subtle shadow
-                          gap: "80px", // Adds a small gap between "Grand Total" and "$50"
-                        }}
-                      >
-                        <span>Delivery Charge</span>
-                        <span>$50</span>
-                      </Typography>
-
-                       <Typography
-                        sx={{
-                          fontWeight: "bold", // Makes the text bold
-                          fontSize: "1.4rem", // Slightly increases the font size
-                          color: "black", // Sets the text color
-                          display: "flex", // Aligns items in a row
-                          justifyContent: "flex-end", // Aligns content towards the right
-                          alignItems: "center", // Ensures vertical alignment
-                          padding: "10px 40px", // Adds padding for spacing
-                          backgroundColor: "#f5f5f5", // Adds a light background
-                          borderRadius: "8px", // Rounds corners
-                          boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.1)", // Adds subtle shadow
-                          gap: "90px", // Adds a small gap between "Grand Total" and "$50"
-                        }}
-                      >
-                        <span>Grand Total</span>
-                        <span>$50</span>
-                      </Typography>
 
 
             
