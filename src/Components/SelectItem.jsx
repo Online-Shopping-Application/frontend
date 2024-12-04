@@ -10,8 +10,8 @@ import {
 } from "@mui/material";
 
 const SelectItem = () => {
-  const location = useLocation();
-  const { selectedProducts } = location.state || { selectedProducts: [] };
+  // const location = useLocation();
+  // const { selectedProducts } = location.state || { selectedProducts: [] };
 
   const [products, setProducts] = useState([
     {
@@ -36,29 +36,29 @@ const SelectItem = () => {
     },
   ]);
 
-  // Send the selected products to the backend
-  const sendSelectedProductsToBackend = async () => {
-    try {
-      const productData = selectedProducts.map((product) => ({
-        productID: product.productID, // Assuming the selected product has a productID
-        count: product.count,
-      }));
+  // // Send the selected products to the backend
+  // const sendSelectedProductsToBackend = async () => {
+  //   try {
+  //     const productData = selectedProducts.map((product) => ({
+  //       productID: product.productID, // Assuming the selected product has a productID
+  //       count: product.count,
+  //     }));
 
-      const response = await axios.post("http://localhost:8082/api/cart/add-cart", {
-        products: productData,
-      });
+  //     const response = await axios.post("http://localhost:8082/api/cart/add-cart", {
+  //       products: productData,
+  //     });
 
-      console.log("Response from backend:", response.data);
-    } catch (error) {
-      console.error("Error sending data to backend:", error);
-    }
-  };
+  //     console.log("Response from backend:", response.data);
+  //   } catch (error) {
+  //     console.error("Error sending data to backend:", error);
+  //   }
+  // };
 
-  useEffect(() => {
-    if (selectedProducts && selectedProducts.length > 0) {
-      sendSelectedProductsToBackend();
-    }
-  }, [selectedProducts]); // Run this effect when selectedProducts change
+  // useEffect(() => {
+  //   if (selectedProducts && selectedProducts.length > 0) {
+  //     sendSelectedProductsToBackend();
+  //   }
+  // }, [selectedProducts]); // Run this effect when selectedProducts change
 
   return (
     <Box sx={{ padding: 2 }}>
@@ -160,9 +160,52 @@ const SelectItem = () => {
                   <Typography sx={{ width: "120px", textAlign: "center" }}>
                     ${subtotal.toFixed(2)}
                   </Typography>
+
                 </Box>
               );
             })}
+
+               
+              <Typography
+                        sx={{
+                          fontWeight: "", // Makes the text bold
+                          fontSize: "1.2rem", // Slightly increases the font size
+                          color: "black", // Sets the text color
+                          display: "flex", // Aligns items in a row
+                          justifyContent: "flex-end", // Aligns content towards the right
+                          alignItems: "center", // Ensures vertical alignment
+                          padding: "10px 30px", // Adds padding for spacing
+                          backgroundColor: "#f5f5f5", // Adds a light background
+                          borderRadius: "8px", // Rounds corners
+                          boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.1)", // Adds subtle shadow
+                          gap: "80px", // Adds a small gap between "Grand Total" and "$50"
+                        }}
+                      >
+                        <span>Delivery Charge</span>
+                        <span>$50</span>
+                      </Typography>
+
+                       <Typography
+                        sx={{
+                          fontWeight: "bold", // Makes the text bold
+                          fontSize: "1.4rem", // Slightly increases the font size
+                          color: "black", // Sets the text color
+                          display: "flex", // Aligns items in a row
+                          justifyContent: "flex-end", // Aligns content towards the right
+                          alignItems: "center", // Ensures vertical alignment
+                          padding: "10px 40px", // Adds padding for spacing
+                          backgroundColor: "#f5f5f5", // Adds a light background
+                          borderRadius: "8px", // Rounds corners
+                          boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.1)", // Adds subtle shadow
+                          gap: "90px", // Adds a small gap between "Grand Total" and "$50"
+                        }}
+                      >
+                        <span>Grand Total</span>
+                        <span>$50</span>
+                      </Typography>
+
+
+            
 
           </Box>
         </Grid>

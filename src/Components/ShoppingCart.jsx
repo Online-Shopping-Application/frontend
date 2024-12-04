@@ -16,7 +16,7 @@ import { useNavigate } from 'react-router-dom';
 import { Button } from "@mui/material";
 
 
-const ShoppingCart = () => {
+const ShoppingCart = ({ selectedProducts, setSelectedProducts }) => {
   const [products, setProducts] = useState([
     {
       id: 1,
@@ -40,7 +40,8 @@ const ShoppingCart = () => {
     },
   ]);
 
-  const [selectedProducts, setSelectedProducts] = useState([]);
+  
+  
 
   const updateQuantity = (id, delta) => {
     setProducts((prevProducts) =>
@@ -57,23 +58,32 @@ const ShoppingCart = () => {
     setSelectedProducts((prevSelected) => prevSelected.filter((item) => item.productID !== id));
   };
 
+  // const handleCheckboxChange = (product) => {
+  //   setSelectedProducts((prevSelected) => {
+  //     const isAlreadySelected = prevSelected.some((item) => item.productID === product.id);
+  //     const updatedSelectedProducts = isAlreadySelected
+  //       ? prevSelected.filter((item) => item.productID !== product.id)
+  //       : [...prevSelected, { productID: product.id, count: product.count }];
+
+  //     // Log to console when updated
+  //     console.log("Selected Products (ShoppingCart):", JSON.stringify(updatedSelectedProducts, null, 2));
+
+  //     return updatedSelectedProducts;
+  //   });
+  // };
+  // const navigate = useNavigate();
+  // const handleData = () => {
+  //   navigate('/shopping-page', { state: { selectedProducts } });
+  // }
+
   const handleCheckboxChange = (product) => {
     setSelectedProducts((prevSelected) => {
       const isAlreadySelected = prevSelected.some((item) => item.productID === product.id);
-      const updatedSelectedProducts = isAlreadySelected
+      return isAlreadySelected
         ? prevSelected.filter((item) => item.productID !== product.id)
         : [...prevSelected, { productID: product.id, count: product.count }];
-
-      // Log to console when updated
-      console.log("Selected Products (ShoppingCart):", JSON.stringify(updatedSelectedProducts, null, 2));
-
-      return updatedSelectedProducts;
     });
   };
-  const navigate = useNavigate();
-  const handleData = () => {
-    navigate('/select-item', { state: { selectedProducts } });
-  }
     
   
 
@@ -206,7 +216,7 @@ const ShoppingCart = () => {
           </Box>
         </Grid>
       </Grid>
-                <Box sx={{ display: "flex", justifyContent: "center", marginTop: 3 }}>
+                {/* <Box sx={{ display: "flex", justifyContent: "center", marginTop: 3 }}>
             <Button
               onClick={handleData}
               variant="contained"
@@ -221,9 +231,9 @@ const ShoppingCart = () => {
                 },
               }}
             >
-              Checkout
+              Checkout1
             </Button>
-          </Box>
+          </Box> */}
 
       {/* <SelectItem selectedProducts={selectedProducts} /> */}
 
