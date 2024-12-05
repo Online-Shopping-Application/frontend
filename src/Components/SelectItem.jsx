@@ -1,13 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import axios from "axios"; // Import axios
-import {
-  Box,
-  Grid,
-  Typography,
-  IconButton,
-  CardMedia,
-} from "@mui/material";
+import { Box, Grid, Typography, IconButton, CardMedia } from "@mui/material";
 
 const SelectItem = () => {
   // const location = useLocation();
@@ -20,7 +14,7 @@ const SelectItem = () => {
       name: "Women Fit and Flare Brown Dress",
       price: 200,
       size: "Medium",
-      count: 1,
+      quantity: 1, // Replaced count with quantity
       deliveryCharge: 10,
       discount: 20,
     },
@@ -30,7 +24,7 @@ const SelectItem = () => {
       name: "Women Fit and Flare Brown Dress",
       price: 150,
       size: "Medium",
-      count: 1,
+      quantity: 1, // Replaced count with quantity
       deliveryCharge: 5,
       discount: 15,
     },
@@ -40,8 +34,8 @@ const SelectItem = () => {
   // const sendSelectedProductsToBackend = async () => {
   //   try {
   //     const productData = selectedProducts.map((product) => ({
-  //       productID: product.productID, // Assuming the selected product has a productID
-  //       count: product.count,
+  //       productId: product.productId, // Updated from productID to productId
+  //       quantity: product.quantity, // Updated from count to quantity
   //     }));
 
   //     const response = await axios.post("http://localhost:8082/api/cart/add-cart", {
@@ -104,7 +98,7 @@ const SelectItem = () => {
 
             {products.map((product) => {
               const subtotal =
-                product.price * product.count - product.discount;
+                product.price * product.quantity - product.discount; // Updated count to quantity
 
               return (
                 <Box
@@ -150,7 +144,7 @@ const SelectItem = () => {
                       justifyContent: "center",
                     }}
                   >
-                    <Typography sx={{ marginX: 1 }}>{product.count}</Typography>
+                    <Typography sx={{ marginX: 1 }}>{product.quantity}</Typography> {/* Updated count to quantity */}
                   </Box>
 
                   <Typography sx={{ width: "120px", textAlign: "center" }}>
@@ -160,14 +154,9 @@ const SelectItem = () => {
                   <Typography sx={{ width: "120px", textAlign: "center" }}>
                     ${subtotal.toFixed(2)}
                   </Typography>
-
                 </Box>
               );
             })}
-
-
-            
-
           </Box>
         </Grid>
       </Grid>
@@ -182,7 +171,7 @@ export default SelectItem;
 
 // import React, { useEffect, useState } from "react";
 // import { useLocation } from "react-router-dom";
-// import axios from "axios";
+// import axios from "axios"; // Import axios
 // import {
 //   Box,
 //   Grid,
@@ -191,10 +180,9 @@ export default SelectItem;
 //   CardMedia,
 // } from "@mui/material";
 
-
 // const SelectItem = () => {
-//   const location = useLocation();
-//   const { selectedProducts } = location.state || { selectedProducts: [] };
+//   // const location = useLocation();
+//   // const { selectedProducts } = location.state || { selectedProducts: [] };
 
 //   const [products, setProducts] = useState([
 //     {
@@ -219,39 +207,31 @@ export default SelectItem;
 //     },
 //   ]);
 
-//   const sendSelectedProductsToBackend = async () => {
-//     try {
-//       const productData = selectedProducts.map((product) => ({
-//         productID: product.productID, // Assuming the selected product has a productID
-//         count: product.count,
-//       }));
+//   // // Send the selected products to the backend
+//   // const sendSelectedProductsToBackend = async () => {
+//   //   try {
+//   //     const productData = selectedProducts.map((product) => ({
+//   //       productID: product.productID, // Assuming the selected product has a productID
+//   //       count: product.count,
+//   //     }));
 
-//       const response = await axios.post("https://your-backend-url.com/checkout", {
-//         products: productData,
-//       });
+//   //     const response = await axios.post("http://localhost:8082/api/cart/add-cart", {
+//   //       products: productData,
+//   //     });
 
-//       console.log("Response from backend:", response.data);
-//     } catch (error) {
-//       console.error("Error sending data to backend:", error);
-//     }
-//   };
+//   //     console.log("Response from backend:", response.data);
+//   //   } catch (error) {
+//   //     console.error("Error sending data to backend:", error);
+//   //   }
+//   // };
 
-
-//   useEffect(() => {
-//     console.log("Selected Products (SelectItem):", JSON.stringify(selectedProducts, null, 2));
-//   }, [selectedProducts]);
-
- 
-
-// //   if (!selectedProducts || selectedProducts.length === 0) {
-// //     return <div>No items selected.</div>;
-// //   }
+//   // useEffect(() => {
+//   //   if (selectedProducts && selectedProducts.length > 0) {
+//   //     sendSelectedProductsToBackend();
+//   //   }
+//   // }, [selectedProducts]); // Run this effect when selectedProducts change
 
 //   return (
-//     // <div>
-//     //    <h3>Selected Items:</h3>
-//     //  <pre>{JSON.stringify(selectedProducts, null, 2)}</pre>
-//     //     </div>
 //     <Box sx={{ padding: 2 }}>
 //       <Typography variant="h4" sx={{ marginBottom: 4 }}>
 //         Checkout
@@ -279,23 +259,23 @@ export default SelectItem;
 //               }}
 //             >
 //               <Typography sx={{ flex: 2, fontWeight: "bold" }}>Products</Typography>
-//               <Typography sx={{ width: "150px", textAlign: "center", fontWeight: "bold" }}>
+//               <Typography sx={{ width: "120px", textAlign: "center", fontWeight: "bold" }}>
 //                 Price
 //               </Typography>
-//               <Typography sx={{ width: "140px", textAlign: "center", fontWeight: "bold" }}>
+//               <Typography sx={{ width: "100px", textAlign: "center", fontWeight: "bold" }}>
 //                 Quantity
 //               </Typography>
-//               <Typography sx={{ width: "60px", textAlign: "center", fontWeight: "bold" }}>
+//               <Typography sx={{ width: "100px", textAlign: "center", fontWeight: "bold" }}>
 //                 Discount
 //               </Typography>
-//               <Typography sx={{ width: "200px", textAlign: "center", fontWeight: "bold" }}>
+//               <Typography sx={{ width: "100px", textAlign: "center", fontWeight: "bold" }}>
 //                 Subtotal
 //               </Typography>
 //             </Box>
 
 //             {products.map((product) => {
 //               const subtotal =
-//                 product.price * product.count - product.discount ;
+//                 product.price * product.count - product.discount;
 
 //               return (
 //                 <Box
@@ -341,9 +321,7 @@ export default SelectItem;
 //                       justifyContent: "center",
 //                     }}
 //                   >
-                    
 //                     <Typography sx={{ marginX: 1 }}>{product.count}</Typography>
-                    
 //                   </Box>
 
 //                   <Typography sx={{ width: "120px", textAlign: "center" }}>
@@ -353,9 +331,14 @@ export default SelectItem;
 //                   <Typography sx={{ width: "120px", textAlign: "center" }}>
 //                     ${subtotal.toFixed(2)}
 //                   </Typography>
+
 //                 </Box>
 //               );
 //             })}
+
+
+            
+
 //           </Box>
 //         </Grid>
 //       </Grid>
@@ -364,4 +347,7 @@ export default SelectItem;
 // };
 
 // export default SelectItem;
+
+
+
 
