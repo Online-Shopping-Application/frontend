@@ -9,11 +9,12 @@ import ListItemText from '@mui/material/ListItemText';
 import InventoryIcon from '@mui/icons-material/Inventory';
 import PersonIcon from '@mui/icons-material/Person';
 import SpaceDashboardIcon from '@mui/icons-material/SpaceDashboard';
-import SettingsIcon from '@mui/icons-material/Settings';
+import ManageAccountsRoundedIcon from '@mui/icons-material/ManageAccountsRounded';
 import { useNavigate, useLocation } from 'react-router-dom';
 import useMediaQuery from '@mui/material/useMediaQuery';
-//import AppBar from '@mui/material/AppBar';
 import { useTheme } from "@mui/material/styles";
+import ManageSearchTwoToneIcon from '@mui/icons-material/ManageSearchTwoTone';
+
 
 // Define the drawer width
 const drawerWidth = 280;
@@ -75,7 +76,7 @@ export default function SideNav({ mobileOpen, handleDrawerToggle }) {
             onClick={() => navigate("/SellerList")} //navigate to Seller List page
           >
             <ListItemIcon style={{ color: location.pathname === "/SellerList" ? '#FFFFFF' : '#000000' }}>
-              <InventoryIcon style={{ fontSize: '30' }} />
+              <ManageAccountsRoundedIcon style={{ fontSize: '30' }} />
             </ListItemIcon>
             <ListItemText primary="Sellers List" primaryTypographyProps={{
               style: {
@@ -85,28 +86,28 @@ export default function SideNav({ mobileOpen, handleDrawerToggle }) {
             }} />
           </ListItemButton>
 
-         {/*  <ListItemButton
+          <ListItemButton
             disableRipple
             style={{
               paddingLeft: '25px',
-              backgroundColor: location.pathname === "/MyProfile" ? '#000000' : 'transparent',
-              color: location.pathname === "/MyProfile" ? '#FFFFFF' : '#000000',
-              borderRadius: location.pathname === "/MyProfile" ? '10px' : '0',
-              width: location.pathname === "/MyProfile" ? '90%' : 'auto',
-              margin: location.pathname === "/MyProfile" ? '0 auto' : '0',
+              backgroundColor: location.pathname === "/ViewRequests" ? '#000000' : 'transparent',
+              color: location.pathname === "/ViewRequests" ? '#FFFFFF' : '#000000',
+              borderRadius: location.pathname === "/ViewRequests" ? '10px' : '0',
+              width: location.pathname === "/ViewRequests" ? '90%' : 'auto',
+              margin: location.pathname === "/ViewRequests" ? '0 auto' : '0',
             }}
-            onClick={() => navigate("/MyProfile")}  //navigate to My Profile page
+            onClick={() => navigate("/ViewRequests")}  //navigate to My Profile page
           >
-            <ListItemIcon style={{ color: location.pathname === "/MyProfile" ? '#FFFFFF' : '#000000' }}>
-              <PersonIcon style={{ fontSize: '30' }} />
+            <ListItemIcon style={{ color: location.pathname === "/ViewRequests" ? '#FFFFFF' : '#000000' }}>
+              <ManageSearchTwoToneIcon style={{ fontSize: '30' }} />
             </ListItemIcon>
-            <ListItemText primary="My Profile" primaryTypographyProps={{
+            <ListItemText primary="View Requests" primaryTypographyProps={{
               style: {
-                color: location.pathname === "/MyProfile" ? '#FFFFFF' : '#000000',
+                color: location.pathname === "/ViewRequests" ? '#FFFFFF' : '#000000',
                 fontSize: '18px'
               }
             }} />
-          </ListItemButton> */}
+          </ListItemButton> 
         </div>
 
 

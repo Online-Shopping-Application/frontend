@@ -50,6 +50,21 @@ function SellerTable() {
   const [orderBy, setOrderBy] = React.useState('id');
   const navigate = useNavigate();
 
+  const [accountStatus, setAccountStatus] = React.useState(
+    rows.reduce((acc, row) => {
+      acc[row.id] = 'Disable Account';
+      return acc;
+    }, {})
+  );
+
+
+  const handleToggleAccountStatus = (id) => {
+    setAccountStatus((prevStatus) => ({
+      ...prevStatus,
+      [id]: prevStatus[id] === 'Disable Account' ? 'Enable Account' : 'Disable Account',
+    }));
+  };
+
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
   };
@@ -75,8 +90,8 @@ function SellerTable() {
 
   const filteredRows = rows.filter((row) => {
     return (
-      row.id.toString().includes(searchQuery) || 
-      row.name.toLowerCase().includes(searchQuery.toLowerCase()) 
+      row.id.toString().includes(searchQuery) ||
+      row.name.toLowerCase().includes(searchQuery.toLowerCase())
     );
   });
 
@@ -85,7 +100,7 @@ function SellerTable() {
     return filteredRows.sort((a, b) => {
       if (orderBy === 'id') {
         return order === 'asc' ? a.id.localeCompare(b.id) : b.id.localeCompare(a.id);
-      } 
+      }
       return 0;
     });
   }, [filteredRows, order, orderBy]);
@@ -96,46 +111,55 @@ function SellerTable() {
   const visibleRows = React.useMemo(() => sortedRows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage), [page, rowsPerPage, sortedRows]);
 
   return (
-    <Box sx={{ width: '100%'}}>
-        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
-      <h1>Sellers List</h1>
-      <TextField
-        value={searchQuery}
-        onChange={handleSearchChange}
-        placeholder="Search by id or name"
-        sx={{ marginTop: '30px', width: '250px' }}
-        InputProps={{
-          startAdornment: (
-            <InputAdornment position="start">
-              <SearchIcon />
-            </InputAdornment>
-          ),
-          sx: { height: '40px' },
-        }}
-      />
+    <Box sx={{ width: '100%' }}>
+      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+      <h1>Sellers</h1>
+        <TextField
+          value={searchQuery}
+          onChange={handleSearchChange}
+          placeholder="Search by id or name.."
+          sx={{ marginTop: '20px', width: '350px' }}
+          InputProps={{
+            startAdornment: (
+              <InputAdornment position="start">
+                <SearchIcon />
+              </InputAdornment>
+            ),
+            sx: { height: '40px' },
+          }}
+        /> 
       </Box>
-      <Paper sx={{ width: '100%'}}>
+      <Paper sx={{ width: '100%' }}>
         <TableContainer sx={{ maxHeight: 470 }}>
           <Table stickyHeader sx={{ minWidth: 750 }} aria-labelledby="tableTitle" size={dense ? 'small' : 'medium'} >
             <TableHead>
-              <TableRow>
-                <TableCell sx={{ fontWeight: 'bold' }}>
-                <TableSortLabel
+              <TableRow sx={{ backgroundColor: 'black' }}>
+                <TableCell sx={{ fontWeight: 'bold', color: 'white', backgroundColor: 'black' }}>
+                  <TableSortLabel
                     active={orderBy === 'id'}
                     direction={orderBy === 'id' ? order : 'asc'}
                     onClick={(event) => handleRequestSort(event, 'id')}
+                    sx={{
+                      color: 'white',
+                      '& .MuiTableSortLabel-icon': {
+                        color: 'white !important',
+                      },
+                      '&.MuiTableSortLabel-root': {
+                        color: 'white',
+                      },
+                    }}
                   >
                     Seller Id
                   </TableSortLabel>
                 </TableCell>
-                <TableCell sx={{ fontWeight: 'bold' }}>
-                    Seller Name
+                <TableCell sx={{ fontWeight: 'bold', color: 'white', backgroundColor: 'black' }}>
+                  Seller Name
                 </TableCell>
-                <TableCell sx={{ fontWeight: 'bold' }}> 
-                    Email
+                <TableCell sx={{ fontWeight: 'bold', color: 'white', backgroundColor: 'black' }}>
+                  Email
                 </TableCell>
-                <TableCell sx={{ paddingLeft: '220px', fontWeight: 'bold' }}>
-                    Actions
+                <TableCell sx={{ paddingLeft: '320px', fontWeight: 'bold', color: 'white', backgroundColor: 'black' }}>
+                  Actions
                 </TableCell>
               </TableRow>
             </TableHead>
@@ -150,14 +174,18 @@ function SellerTable() {
                     <TableCell>{row.name}</TableCell>
                     <TableCell>{row.email}</TableCell>
                     <TableCell sx={{ display: 'flex', justifyContent: 'flex-end' }}>
-                      <Button className='disable-account-button' variant="outlined">
-                        Disable Account
+                      <Button
+                        className='disable-account-button'
+                        variant="outlined"
+                        onClick={() => handleToggleAccountStatus(row.id)}
+                      >
+                        {accountStatus[row.id]}
                       </Button>
                       <Box sx={{ width: 10 }} /> {/* Add space between buttons */}
                       <Button className='view-products-button' variant="outlined" onClick={() => handleViewProducts(row.id)}>
                         View Products
                       </Button>
-                    </TableCell> 
+                    </TableCell>
                   </TableRow>
                 );
               })}
@@ -178,7 +206,7 @@ function SellerTable() {
           onPageChange={handleChangePage}
           onRowsPerPageChange={handleChangeRowsPerPage}
         />
-      </Paper>   
+      </Paper>
     </Box>
   );
 }

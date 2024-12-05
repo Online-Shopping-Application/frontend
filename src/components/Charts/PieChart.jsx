@@ -66,7 +66,7 @@ export default function PieChart() {
                         onClick={handleToggle} 
                         sx={{
                             textTransform: 'none', 
-                            backgroundColor: '#0F4C81', 
+                            backgroundColor: '#000000', 
                             color: '#FFFFFF', 
                             fontSize: '14px', 
                             fontWeight: '550',
@@ -74,7 +74,7 @@ export default function PieChart() {
                             width: "180px",
                             fontFamily: 'sans-serif', 
                             '&:hover': {
-                              backgroundColor: '#0D3A6A', 
+                              backgroundColor: '#000000', 
                             },
                           }}     
                     >

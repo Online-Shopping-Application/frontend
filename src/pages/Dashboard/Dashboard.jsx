@@ -4,7 +4,7 @@ import Overview from "../../components/Overview/Overview";
 
 export default function Dashboard() {
     useEffect(() => {
-        document.body.style.overflow = 'auto';
+        document.body.style.overflow = 'hidden';
 
         return () => {
             document.body.style.overflow = 'unset';
