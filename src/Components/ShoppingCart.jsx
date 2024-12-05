@@ -31,17 +31,14 @@ const ShoppingCart = ({ userID, selectedProducts, setSelectedProducts }) => {
     fetchUserProducts(userId);
   }, []);
 
-  const [quantity, setQuantity] = useState(1);
+  const [quantity, setQuantity] = React.useState(1); // Initial quantity set to 1
 
-  const updateQuantity = (id, delta) => {
-    setProducts2((prevProducts) =>
-      prevProducts.map((product) =>
-        product.productId === id
-          ? { ...product, quantity: Math.max(1, product.quantity + delta) }
-          : product
-      )
-    );
-  };
+const updateQuantity = (productId, change) => {
+  // Example logic for updating the quantity
+  const newQuantity = Math.max(1, quantity + change); // Prevent quantity from going below 1
+  setQuantity(newQuantity);
+  // Add any additional logic for updating the quantity on the server or state
+};
 
   const deleteProduct = async (userId, productId) => {
     try {
@@ -157,13 +154,21 @@ const ShoppingCart = ({ userID, selectedProducts, setSelectedProducts }) => {
                       justifyContent: "center",
                     }}
                   >
-                    <IconButton size="small" onClick={() => updateQuantity(product.productId, -1)}>
+                    {/* <IconButton size="small" onClick={() => updateQuantity(product.productId, -1)}>
                       <RemoveIcon />
                     </IconButton>
                     <Typography sx={{ marginX: 1 }}>{product.quantity}</Typography>
                     <IconButton size="small" onClick={() => updateQuantity(product.productId, 1)}>
                       <AddIcon />
-                    </IconButton>
+                    </IconButton> */}
+
+                    <IconButton size="small" onClick={() => updateQuantity(product.productId, -1)}>
+                        <RemoveIcon />
+                      </IconButton>
+                      <Typography sx={{ marginX: 1 }}>{quantity}</Typography>
+                      <IconButton size="small" onClick={() => updateQuantity(product.productId, 1)}>
+                        <AddIcon />
+                      </IconButton>
                   </Box>
 
                   <Typography sx={{ width: "120px", textAlign: "center" }}>
