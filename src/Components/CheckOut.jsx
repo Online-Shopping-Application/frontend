@@ -1,6 +1,7 @@
 
 
-import React, { useState } from "react";
+import React, { useState,useEffect } from "react";
+import axios from 'axios';
 import {
   Grid,
   TextField,
@@ -76,6 +77,10 @@ const CheckOut = () => {
   const handleDeleteAddress = (id) => {
     setAddresses(addresses.filter((address) => address.id !== id));
   };
+
+
+  
+
 
   return (
     <Grid container spacing={4} sx={{ margin: 0, width: "100%", padding: 0 }}>

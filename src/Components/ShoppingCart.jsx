@@ -1,84 +1,103 @@
 
-import React, { useState } from "react";
+import AddIcon from "@mui/icons-material/Add";
+import DeleteIcon from "@mui/icons-material/Delete";
+import RemoveIcon from "@mui/icons-material/Remove";
 import {
   Box,
-  Grid,
-  Typography,
-  IconButton,
   CardMedia,
   Checkbox,
+  Grid,
+  IconButton,
+  Typography,
 } from "@mui/material";
-import DeleteIcon from "@mui/icons-material/Delete";
-import AddIcon from "@mui/icons-material/Add";
-import RemoveIcon from "@mui/icons-material/Remove";
-import SelectItem from "./SelectItem";
-import { useNavigate } from 'react-router-dom';
-import { Button } from "@mui/material";
 import axios from "axios";
+import React, { useEffect, useState } from "react";
 
 
 const ShoppingCart = ({ userID, selectedProducts, setSelectedProducts }) => {
-  const [products, setProducts] = useState([
-    {
-      id: 1,
-      imageUrl: "https://i.pinimg.com/736x/af/36/78/af36783a464d3b5163053258a042e625.jpg",
-      name: "Women Fit and Flare Brown Dress",
-      price: 200,
-      size: "Medium",
-      count: 1,
-      deliveryCharge: 10,
-      discount: 20,
-    },
-    {
-      id: 2,
-      imageUrl: "https://rukminim2.flixcart.com/image/612/612/xif0q/dress/k/a/k/l-vna1003027-vishudh-original-imagyxpgq9ywyhmu.jpeg?q=70",
-      name: "Women Fit and Flare Brown Dress",
-      price: 150,
-      size: "Medium",
-      count: 1,
-      deliveryCharge: 5,
-      discount: 15,
-    },
-  ]);
-
+  // const [products, setProducts] = useState([
+  //   {
+  //     id: 1,
+  //     imageUrl: "https://i.pinimg.com/736x/af/36/78/af36783a464d3b5163053258a042e625.jpg",
+  //     name: "Women Fit and Flare Brown Dress",
+  //     price: 400,
+  //     size: "Medium",
+  //     count: 1,
+  //     deliveryCharge: 10,
+  //     discount: 20,
+  //   },
+  //   {
+  //     id: 2,
+  //     imageUrl: "https://rukminim2.flixcart.com/image/612/612/xif0q/dress/k/a/k/l-vna1003027-vishudh-original-imagyxpgq9ywyhmu.jpeg?q=70",
+  //     name: "Women Fit and Flare Brown Dress",
+  //     price: 150,
+  //     size: "Medium",
+  //     count: 1,
+  //     deliveryCharge: 5,
+  //     discount: 15,
+  //   },
+    
+  //   {
+  //     id: 3,
+  //     imageUrl: "https://rukminim2.flixcart.com/image/612/612/xif0q/dress/k/a/k/l-vna1003027-vishudh-original-imagyxpgq9ywyhmu.jpeg?q=70",
+  //     name: "Women Fit and Flare Brown Dress",
+  //     price: 150,
+  //     size: "Medium",
+  //     count: 1,
+  //     deliveryCharge: 5,
+  //     discount: 15,
+  //   },
+  // ]);
   
-  useEffect(() => {
-    if (userID) {
-      fetchUserProducts(userID);
-    }
-  }, [userID]);
+  
+ let userId = 100;
 
-  const fetchUserProducts = async (userID) => {
+  const [products2, setProducts2] = useState([]);
+
+  const fetchUserProducts = async (userId) => {
     try {
-      const response = await axios.get(`https://api.example.com/user/${userID}/products`);
+      const response = await axios.get(`http://localhost:8082/api/cart/get/${userId}`);
       // Assuming the API returns an array of products
-      setProducts(response.data);
+      setProducts2(response.data);
+      console.log("Products: ", products2);
+
     } catch (error) {
       console.error("Error fetching user products:", error);
     }
   };
 
 
+  useEffect(() => {
+    
+    fetchUserProducts(userId);
+  
+},[]);
+
+const[count, setCount] = useState(1);
+
   const updateQuantity = (id, delta) => {
     setProducts((prevProducts) =>
       prevProducts.map((product) =>
         product.id === id
-          ? { ...product, count: Math.max(1, product.count + delta) }
+          ? { ...product, count: Math.max(1, count + delta) }
           : product
       )
     );
   };
+  
 
   // const deleteProduct = (id) => {
   //   setProducts((prevProducts) => prevProducts.filter((product) => product.id !== id));
   //   setSelectedProducts((prevSelected) => prevSelected.filter((item) => item.productID !== id));
   // };
-  const deleteProduct = async (id) => {
+  const deleteProduct = async (userId, productId) => {
     try {
+      console.log("Deleting product:", productId);
+      console.log("Deleting product:", userId);
       // Sending DELETE request to the server
-      const response = await axios.delete(`http://localhost:8082/api/cart/remove-from-cart/{userId}/{productId}`);
+      const response = await axios.delete(`http://localhost:8082/api/cart/remove-from-cart/${userId}/${productId}`);
       console.log("Product deleted successfully:", response.data);
-  
+      
       // Updating the local state to remove the product
       setProducts((prevProducts) => prevProducts.filter((product) => product.id !== id));
       setSelectedProducts((prevSelected) => prevSelected.filter((item) => item.productID !== id));
@@ -87,14 +106,14 @@ const ShoppingCart = ({ userID, selectedProducts, setSelectedProducts }) => {
     }
   };
  
-  
+
 
   const handleCheckboxChange = (product) => {
     setSelectedProducts((prevSelected) => {
-      const isAlreadySelected = prevSelected.some((item) => item.productID === product.id);
+      const isAlreadySelected = prevSelected.some((item) => item.productID === product.productId);
       return isAlreadySelected
-        ? prevSelected.filter((item) => item.productID !== product.id)
-        : [...prevSelected, { productID: product.id, count: product.count }];
+        ? prevSelected.filter((item) => item.productID !== product.productId)
+        : [...prevSelected, { productID: product.productId, count: count }];
     });
   };
     
@@ -102,9 +121,26 @@ const ShoppingCart = ({ userID, selectedProducts, setSelectedProducts }) => {
 
   return (
     <Box sx={{ padding: 3 }}>
+      <table border="1">
+        <thead><tr><th>Product Name</th><th>Price</th><th>Discount</th><th>Subtotal</th></tr></thead>
+        <tbody>
+          {products2.map((product) => (
+            <tr key={product.productId}>
+              <td>{product.productName}</td>
+              <td>{product.unitPrice}</td>
+              <td>{product.discount}%</td>
+              <td>{product.subtotal}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+          
+      
       <Typography variant="h4" sx={{ marginBottom: 4 }}>
         Shopping Cart
       </Typography>
+
+      
 
       <Grid container spacing={2}>
         <Grid item xs={12}>
@@ -143,13 +179,12 @@ const ShoppingCart = ({ userID, selectedProducts, setSelectedProducts }) => {
               <Box sx={{ width: "40px" }} />
             </Box>
 
-            {products.map((product) => {
-              const subtotal =
-                product.price * product.count - product.discount + product.deliveryCharge;
+            {products2.map((product) => {
+              const subtotal = product.unitPrice * product.count - product.discount + product.deliveryCharges;
 
               return (
                 <Box
-                  key={product.id}
+                  key={product.productId}
                   sx={{
                     display: "flex",
                     flexDirection: { xs: "column", md: "row" },
@@ -163,7 +198,7 @@ const ShoppingCart = ({ userID, selectedProducts, setSelectedProducts }) => {
                     <CardMedia
                       component="img"
                       image={product.imageUrl}
-                      alt={product.name}
+                      alt={product.productName}
                       sx={{
                         width: { xs: 50, md: 60 },
                         height: { xs: 50, md: 60 },
@@ -172,15 +207,15 @@ const ShoppingCart = ({ userID, selectedProducts, setSelectedProducts }) => {
                       }}
                     />
                     <Box>
-                      <Typography>{product.name}</Typography>
+                      <Typography>{product.productName}</Typography>
                       <Typography variant="body2" sx={{ color: "#777" }}>
-                        Size: {product.size}
+                        Size: {product.productSize}
                       </Typography>
                     </Box>
                   </Box>
 
                   <Typography sx={{ width: "120px", textAlign: "center" }}>
-                    ${product.price.toFixed(2)}
+                    ${product.unitPrice}
                   </Typography>
 
                   <Box
@@ -191,29 +226,29 @@ const ShoppingCart = ({ userID, selectedProducts, setSelectedProducts }) => {
                       justifyContent: "center",
                     }}
                   >
-                    <IconButton size="small" onClick={() => updateQuantity(product.id, -1)}>
+                    <IconButton size="small" onClick={() => updateQuantity(product.productId, -1)}>
                       <RemoveIcon />
                     </IconButton>
-                    <Typography sx={{ marginX: 1 }}>{product.count}</Typography>
-                    <IconButton size="small" onClick={() => updateQuantity(product.id, 1)}>
+                    <Typography sx={{ marginX: 1 }}>{selectedProducts.id}</Typography>
+                    <IconButton size="small" onClick={() => updateQuantity(product.productId, 1)}>
                       <AddIcon />
                     </IconButton>
                   </Box>
 
                   <Typography sx={{ width: "120px", textAlign: "center" }}>
-                    -${product.discount.toFixed(2)}
+                    {product.discount.toFixed(2)}%
                   </Typography>
 
                   <Typography sx={{ width: "120px", textAlign: "center" }}>
                     ${subtotal.toFixed(2)}
                   </Typography>
 
-                  <IconButton onClick={() => deleteProduct(product.id)}>
+                  <IconButton onClick={() => deleteProduct(userId, product.productId)}>
                     <DeleteIcon color="error"  sx={{ color: "black" }} />
                   </IconButton>
 
                   <Checkbox
-                    checked={selectedProducts.some((item) => item.productID === product.id)}
+                    checked={selectedProducts.some((item) => item.productID === product.productId)}
                     onChange={() => handleCheckboxChange(product)}
                     sx={{
                       '&.Mui-checked': {
@@ -250,7 +285,10 @@ const ShoppingCart = ({ userID, selectedProducts, setSelectedProducts }) => {
 
       {/* <SelectItem selectedProducts={selectedProducts} /> */}
 
+      
     </Box>
+
+    
   );
 };
 
