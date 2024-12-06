@@ -13,26 +13,11 @@ const ShoppingPage = () => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
 
-  // Send the selected products to the backend
-  const sendSelectedProductsToBackend = async () => {
-    try {
-      const productData = selectedProducts.map((product) => ({
-        productId: product.productId, // Updated key
-        quantity: product.quantity, // Updated key
-      }));
-
-      const response = await axios.post("http://localhost:8082/api/order/payment-details", {
-        products: productData,
-      });
-
-      console.log("Response from backend:", response.data);
-    } catch (error) {
-      console.error("Error sending data to backend:", error);
-    }
-  };
+  
 
   // State for backend data
   const [backendData, setBackendData] = useState([]);
+  const [subtotal, setSubtotal] = useState(0);
   const [deliveryCharge, setDeliveryCharge] = useState(0);
   const [grandTotal, setGrandTotal] = useState(0);
 
@@ -43,22 +28,43 @@ const ShoppingPage = () => {
         productId: product.productId, // Updated key
         quantity: product.quantity, // Updated key
       }));
-
+      console.log("Product Data:", productData);
       const response = await axios.post(
-        "http://localhost:8082/api/order/payment-details",
-        {
-          products: productData,
-        }
+        "http://localhost:8082/api/order/payment-details",productData
+        
       );
-
+      console.log("Response from backend:", response.data);
       const data = response.data;
-      setBackendData(data.products); // Assuming response has a "products" field
-      setDeliveryCharge(data.deliveryCharge); // Extract delivery charge
-      setGrandTotal(data.grandTotal); // Extract grand total
+      setBackendData(data); // Assuming response has a "products" field
+      setDeliveryCharge(data.totalDeliveryCharges); // Extract delivery charge
+      setGrandTotal(data.totalCost); // Extract grand total
+      setSubtotal(data.totalCost - data.totalDeliveryCharges);
     } catch (error) {
       console.error("Error fetching data from backend:", error);
     }
   };
+
+  // fetch order product details
+  const [productDetails, setProductDetails] = useState([]);
+
+  const fetchProductDetails = async () => {
+    try{
+      const productData = selectedProducts.map((product) => ({
+        productId: product.productId, // Updated key
+        quantity: product.quantity, // Updated key
+      }));
+      const response = await axios.post("http://localhost:8082/api/order/by-ids",productData);
+      setProductDetails(response.data);
+      console.log("Product Details from backend:", response.data);
+    }catch(error){
+      console.error("Error fetching product details from backend:", error);
+    }
+  };
+
+  useEffect(() => { 
+    fetchDataFromBackend();
+    fetchProductDetails();
+  }, [selectedProducts]);
 
   // Place Order Handler
   const handlePlaceOrder = async () => {
@@ -81,13 +87,7 @@ const ShoppingPage = () => {
     }
   };
 
-  useEffect(() => {
-    if (selectedProducts.length > 0) {
-      sendSelectedProductsToBackend();
-    } else {
-      console.warn("No selected products to send.");
-    }
-  }, [selectedProducts]);
+
 
   useEffect(() => {
     console.log("Selected Products (ShoppingPage):", JSON.stringify(selectedProducts, null, 2));
@@ -115,6 +115,22 @@ const ShoppingPage = () => {
             >
               <span>Delivery Charge</span>
               <span>${deliveryCharge.toFixed(2)}</span>
+            </Typography>
+
+            <Typography
+              sx={{
+                fontWeight: "",
+                fontSize: "1.2rem",
+                color: "black",
+                display: "flex",
+                justifyContent: "flex-end",
+                alignItems: "center",
+                padding: "10px 40px",
+                gap: "90px",
+              }}
+            >
+              <span>Sub Total</span>
+              <span>${subtotal.toFixed(2)}</span>
             </Typography>
 
             <Typography

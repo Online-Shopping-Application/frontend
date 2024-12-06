@@ -14,6 +14,7 @@ import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 
 const CheckOut = () => {
+  
   const [addresses, setAddresses] = useState([
     {
       id: 1,
@@ -77,9 +78,6 @@ const CheckOut = () => {
   const handleDeleteAddress = (id) => {
     setAddresses(addresses.filter((address) => address.id !== id));
   };
-
-
-  
 
 
   return (

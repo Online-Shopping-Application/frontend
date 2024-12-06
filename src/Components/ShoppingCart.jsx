@@ -22,30 +22,57 @@ const ShoppingCart = ({ userID, selectedProducts, setSelectedProducts }) => {
 
   ]);
 
-  const fetchUserProducts = async (userId) => {
-    try {
-      const response = await axios.get(`http://localhost:8082/api/cart/get/${userId}`);
-      setProducts2(response.data);
-      console.log("Products: ", products2);
-    } catch (error) {
-      console.error("Error fetching user products:", error);
-    }
-  };
+  // const fetchUserProducts = async (userId) => {
+  //   try {
+  //     const response = await axios.get(`http://localhost:8082/api/cart/get/${userId}`);
+  //     setProducts2(response.data);
+  //     console.log("Products: ", products2);
+  //   } catch (error) {
+  //     console.error("Error fetching user products:", error);
+  //   }
+  // };
+
+  // Fetch products from the backend (without quantity)
+const fetchUserProducts = async (userId) => {
+  try {
+    const response = await axios.get(`http://localhost:8082/api/cart/get/${userId}`);
+    // Set initial quantity to 1 for each product
+    const updatedProducts = response.data.map((product) => ({
+      ...product,
+      quantity: 1, // Initialize quantity as 1 (only frontend)
+    }));
+    
+    setProducts2(updatedProducts);
+  } catch (error) {
+    console.error("Error fetching user products:",error);
+}
+};
 
   useEffect(() => {
     fetchUserProducts(userId);
   }, []);
 
  
+  // const updateQuantity = (productId, change) => {
+  //   setProducts2((prevProducts) =>
+  //     prevProducts.map((product) =>
+  //       product.productId === productId
+  //         ? { ...product, quantity: Math.max(1, product.quantity + change) }
+  //         : product
+  //     )
+  //   );
+  // };
+
+  // Handle quantity update (increase/decrease)
   const updateQuantity = (productId, change) => {
     setProducts2((prevProducts) =>
       prevProducts.map((product) =>
         product.productId === productId
-          ? { ...product, quantity: Math.max(1, product.quantity + change) }
+          ? { ...product, quantity: Math.max(1, product.quantity + change) } // Prevent quantity from going below 1
           : product
-      )
-    );
-  };
+   )
+);
+};
 
   const deleteProduct = async (userId, productId) => {
     try {
