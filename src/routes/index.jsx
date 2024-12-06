@@ -6,10 +6,12 @@ import RegisterPage from "../pages/RegisterPage/RegisterPage";
 import ForgotPasswordPage from "../pages/ForgotPasswordPage/ForgotPasswordPage";
 import VerifyOtpPage from '../pages/VerifyOtpPage/VerifyOtpPage'
 import Search from "../Components/Search";
+import UsersLandingPage from "../pages/AllUsersLandingPage/UsersLandingPage";
 
 const GlobalRouter = () => {
     return (
         <Routes>
+            <Route path={PATH_PUBLIC.home} element={<UsersLandingPage/>} />
             <Route path={PATH_PUBLIC.login} element={<LoginPage/>} />
             <Route path={PATH_PUBLIC.register} element={<RegisterPage/>} />
             <Route path={PATH_PUBLIC.passwordChange} element={<ForgotPasswordPage/>} />
