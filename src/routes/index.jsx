@@ -1,12 +1,20 @@
 import { Route, Routes } from "react-router-dom";
 import { PATH_DASHBOARD, PATH_PUBLIC } from "./paths";
 
+import AddProduct from "../Components/AddProduct";
+import Search from "../Components/Search";
+
+import SellerLandingPage from "../Components/SellerLandingPage";
+
+import ForgotPasswordPage from "../pages/ForgotPasswordPage/ForgotPasswordPage";
 import LoginPage from "../pages/LoginPage/LoginPage";
 import RegisterPage from "../pages/RegisterPage/RegisterPage";
-import ForgotPasswordPage from "../pages/ForgotPasswordPage/ForgotPasswordPage";
-import VerifyOtpPage from '../pages/VerifyOtpPage/VerifyOtpPage'
-import Search from "../Components/Search";
-import UsersLandingPage from "../pages/AllUsersLandingPage/UsersLandingPage";
+
+import VerifyOtpPage from '../pages/VerifyOtpPage/VerifyOtpPage';
+
+import Notification from "../Components/NotificationTest/Notification";
+import ReceiveNotification from "../Components/ReceiveNotification/ReceiveNotification";
+
 
 const GlobalRouter = () => {
     return (
@@ -17,6 +25,13 @@ const GlobalRouter = () => {
             <Route path={PATH_PUBLIC.passwordChange} element={<ForgotPasswordPage/>} />
             <Route path={PATH_PUBLIC.verifyOtp} element={<VerifyOtpPage/>} />
             <Route path={PATH_DASHBOARD.dashboard} element={<Search/>} />
+            <Route path="/sellerLandingPage" element = {<SellerLandingPage/>} />
+
+            <Route path="/addProduct" element = {<AddProduct/>} />
+
+            <Route path="/notification" element = {<Notification/>} />
+            <Route path="/receive" element = {<ReceiveNotification/>} />
+
         </Routes>
     );
 }

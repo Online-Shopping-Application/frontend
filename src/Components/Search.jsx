@@ -11,18 +11,18 @@ export default function Search() {
   const navigate = useNavigate();
 
   const [allProducts, setAllProducts] = useState([]);
+  const [selectedTypes, setSelectedTypes] = useState([]);
+  const [selectedColor, setSelectedColor] = useState(null);
+  const [selectedSize, setSelectedSize] = useState(null);
 
   const [value, setValue] = useState([3000, 8000]); // Initial range values
   const sizes = ["S", "M", "L", "XL", "XXL"];
+
   const colors = [
-    { code: "#FF0000" },
-    { code: "#0000FF" },
-    { code: "#00FF00" },
-    { code: "#FFFF00" },
-    { code: "#e29216" },
-    { code: "#d916e2 " },
-    { code: "#a7e216 " },
-    { code: "#16e2df  " },
+    { name: "Red", code: "#FF0000" },
+    { name: "Green", code: "#00FF00" },
+    { name: "Blue", code: "#0000FF" },
+    { name: "Yellow", code: "#FFFF00" },
   ];
 
   const [data] = useState([
@@ -140,6 +140,30 @@ export default function Search() {
     setValue(newValue);
   };
 
+  const handleCheckboxChange = (event) => {
+    // console.log(event.target);
+
+    const { value, checked } = event.target;
+
+    if (checked) {
+      // Add the selected type to the array
+      setSelectedTypes((prev) => [...prev, value]);
+    } else {
+      // Remove the unselected type from the array
+      setSelectedTypes((prev) => prev.filter((type) => type !== value));
+    }
+  };
+
+  const handleColorClick = (color) => {
+    setSelectedColor(color);
+    console.log("Selected color:", color);
+  };
+
+  const handleSizeClick = (size) => {
+    setSelectedSize(size);
+    console.log("Selected size:", size);
+  };
+
   const handleCardClick = (id) => {
     navigate(`/item/${id}`);
   };
@@ -152,6 +176,21 @@ export default function Search() {
       setAllProducts(response.data)
     } catch (e) {
       alert(e)
+    }
+  }
+
+
+  const filterProduct = async () => {
+    try {
+      console.log(value , selectedTypes , selectedColor , selectedSize);
+
+      const filterResponse = await axios.post("http://localhost:8084/api/v1/filter/filter-product",{price:value ,colour:selectedColor,size:selectedSize , type:selectedTypes})
+      console.log(filterResponse);
+
+      setAllProducts(filterResponse.data.productDTO)
+
+    } catch (error) {
+      alert(error)
     }
   }
 
@@ -169,7 +208,7 @@ export default function Search() {
           <Card
             sx={{
               width: '45vh',
-              height: '65%',
+              height: '100%',
               padding: '10px',
               marginTop: '105px',
               marginLeft: '60px',
@@ -246,6 +285,7 @@ export default function Search() {
                   borderColor: 'black',
                 },
               }}
+              onClick={filterProduct}
             >
               APPLY
             </Button>
@@ -259,16 +299,17 @@ export default function Search() {
               <Checkbox {...label} /> All
             </Box>
             <Box sx={{ padding: "16px" }}>
-              <Typography variant="h7" sx={{ fontWeight: 'bold', }}>TYPE</Typography>
+              <Typography variant="h7" sx={{ fontWeight: "bold" }}>
+                TYPE
+              </Typography>
               <hr style={{ margin: "8px 0" }} />
-              <Checkbox {...label} /> Frocks<br></br>
-              <Checkbox {...label} />Trousers<br></br>
-              <Checkbox {...label} />Blouse<br></br>
-              <Checkbox {...label} />Sarees<br></br>
-              <Checkbox {...label} /> shirts<br></br>
-              <Checkbox {...label} />Skirts<br></br>
-              <Checkbox {...label} />Baby clothes<br></br>
-
+              <Checkbox value="Frocks" onChange={handleCheckboxChange} /> Frocks<br></br>
+              <Checkbox value="Trousers" onChange={handleCheckboxChange} /> Trousers<br></br>
+              <Checkbox value="Blouse" onChange={handleCheckboxChange} /> Blouse<br></br>
+              <Checkbox value="Sarees" onChange={handleCheckboxChange} /> Sarees<br></br>
+              <Checkbox value="Shirts" onChange={handleCheckboxChange} /> Shirts<br></br>
+              <Checkbox value="Skirts" onChange={handleCheckboxChange} /> Skirts<br></br>
+              <Checkbox value="Baby clothes" onChange={handleCheckboxChange} /> Baby clothes<br></br>
             </Box>
 
             <Box sx={{ padding: "16px" }}>
@@ -288,6 +329,7 @@ export default function Search() {
                         cursor: "pointer",
                         '&:hover': { backgroundColor: "#f0f0f0" }
                       }}
+                      onClick={() => handleSizeClick(size)}
                     >
                       {size}
                     </Box>
@@ -296,7 +338,7 @@ export default function Search() {
               </Grid>
             </Box>
 
-            <Box sx={{ padding: "16px" }}>
+            <Box sx={{ padding: "16px"}}>
               <Typography variant="h7" sx={{ fontWeight: 'bold', }}>
                 COLORS
               </Typography>
@@ -314,6 +356,7 @@ export default function Search() {
                         cursor: "pointer",
                         '&:hover': { transform: "scale(1.1)" }
                       }}
+                      onClick={() => handleColorClick(color.name)}
                     />
 
                   </Grid>
@@ -401,10 +444,10 @@ export default function Search() {
                 padding: '10px',
                 opacity: 0,
                 animation: `${index % 3 === 0
-                    ? 'fade-in-scale'
-                    : index % 3 === 1
-                      ? 'slide-in'
-                      : 'zoom-in'
+                  ? 'fade-in-scale'
+                  : index % 3 === 1
+                    ? 'slide-in'
+                    : 'zoom-in'
                   } 2.0s ease-in ${index * 0.3}s forwards`,
               }}
             >

@@ -3,71 +3,36 @@ import { Box, Typography, AppBar,Toolbar,Button,List,ListItem,ListItemText,Drawe
 import CloseIcon from '@mui/icons-material/Close';
 import NotificationsIcon from "@mui/icons-material/Notifications";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
+import Sidebar from "../Components/Sidebar";
+import NavigationBar from "../Components/NavigationBar";
 
-// Sidebar Component
-const Sidebar = ({ onNavigate }) => {
-  const menuItems = [
-    { text: "Dashboard", key: "dashboard" },
-    { text: "Add Product", key: "addProduct" },
-    { text: "Order List", key: "orderList" },
-    { text: "Refund Request", key: "refundRequest" },
-  ];
 
-  return (
-    <Drawer
-      variant="permanent"
-      sx={{
-        width: 240,
-        flexShrink: 0,
-        "& .MuiDrawer-paper": {
-          width: 240,
-          boxSizing: "border-box",
-          backgroundColor: "#f9f9f9",
-        },
-      }}
-    >
-      <Box sx={{ p: 2, textAlign: "center" }}>
-        <Typography variant="h6">Seller Panel</Typography>
-      </Box>
-      <List>
-        {menuItems.map((item) => (
-          <ListItem
-            button
-            key={item.key}
-            onClick={() => onNavigate(item.key)}
-          >
-            <ListItemText primary={item.text} />
-          </ListItem>
-        ))}
-      </List>
-    </Drawer>
-  );
-};
+
 
 // Navigation Bar Component
-const NavigationBar = ({ onLogout }) => {
-  const [showProfileMenu, setShowProfileMenu] = useState(false);
+// const NavigationBar = ({ onLogout }) => {
+//   const [showProfileMenu, setShowProfileMenu] = useState(false);
 
-  return (
-    <AppBar position="fixed" sx={{ zIndex: (theme) => theme.zIndex.drawer + 1,
-        backgroundColor:"black"
-     }}>
-      <Toolbar>
-        <Typography variant="h6" sx={{ flexGrow: 1 }}>
-          Seller
-        </Typography>
-        <IconButton color="inherit" onClick={() => setShowProfileMenu(!showProfileMenu)}>
-          <Badge badgeContent={3} color="error">
-            <NotificationsIcon />
-          </Badge>
-        </IconButton>
-        <IconButton color="inherit" onClick={onLogout}>
-          <AccountCircleIcon />
-        </IconButton>
-      </Toolbar>
-    </AppBar>
-  );
-};
+//   return (
+//     <AppBar position="fixed" sx={{ zIndex: (theme) => theme.zIndex.drawer + 1,
+//         backgroundColor:"black"
+//      }}>
+//       <Toolbar>
+//         <Typography variant="h6" sx={{ flexGrow: 1 }}>
+//           Seller
+//         </Typography>
+//         <IconButton color="inherit" onClick={() => setShowProfileMenu(!showProfileMenu)}>
+//           <Badge badgeContent={3} color="error">
+//             <NotificationsIcon />
+//           </Badge>
+//         </IconButton>
+//         <IconButton color="inherit" onClick={onLogout}>
+//           <AccountCircleIcon />
+//         </IconButton>
+//       </Toolbar>
+//     </AppBar>
+//   );
+// };
 
 // Initial Product Data
 const initialProducts = [
@@ -163,6 +128,8 @@ const SellerLandingPage = () => {
   const [products, setProducts] = useState(initialProducts);
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [popupVisible, setPopupVisible] = useState(false);
+  
+  
 
   const handleLogout = () => alert("Logged out successfully!");
   const handleNavigation = (section) => setActiveSection(section);
