@@ -14,7 +14,9 @@ import VerifyOtpPage from '../pages/VerifyOtpPage/VerifyOtpPage';
 
 import Notification from "../Components/NotificationTest/Notification";
 import ReceiveNotification from "../Components/ReceiveNotification/ReceiveNotification";
-
+import UsersLandingPage from "../pages/AllUsersLandingPage/UsersLandingPage";
+import ShoppingCartPage from "../pages/OrderProcessingPage/ShoppingCartPage";
+import ShoppingPage from "../pages/OrderProcessingPage/ShoppingPage";
 
 const GlobalRouter = () => {
     return (
@@ -31,6 +33,8 @@ const GlobalRouter = () => {
 
             <Route path="/notification" element = {<Notification/>} />
             <Route path="/receive" element = {<ReceiveNotification/>} />
+            <Route path="/shopping-cart" element = {<ShoppingCartPage/>} />
+            <Route path="/shopping-page" element = {<ShoppingPage/>} />
 
         </Routes>
     );

@@ -2,8 +2,8 @@ import React, { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import axios from "axios";
 import { Grid, Box, useMediaQuery, useTheme } from "@mui/material";
-import SelectItem from "../Components/SelectItem";
-import CheckOut from "../Components/CheckOut";
+import SelectItem from "../../Components/OrderProcessing/SelectItem";
+import CheckOut from "../../Components/OrderProcessing/CheckOut";
 import { Typography, Button } from '@mui/material';
 
 const ShoppingPage = () => {

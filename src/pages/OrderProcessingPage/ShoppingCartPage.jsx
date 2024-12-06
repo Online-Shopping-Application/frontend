@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import ShoppingCart from "../Components/ShoppingCart";
+import ShoppingCart from "../../Components/OrderProcessing/ShoppingCart";
 import { useNavigate } from "react-router-dom";
 import { Box, Button } from "@mui/material";
 
