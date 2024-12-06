@@ -68,7 +68,7 @@ function LoginForm() {
               <input type="checkbox" />
               Remember Me
             </label>
-            <a href="#" className="forgot-password">Forgot Password?</a>
+            <a href="/password-change" className="forgot-password">Forgot Password?</a>
           </div>
 
           <button
@@ -79,7 +79,7 @@ function LoginForm() {
           </button>
 
           <div className='signup'>
-            <p>Don't you have an account ? <a href="#" className="signup-link">Signup</a></p>
+            <p>Don't you have an account ? <a href="/register" className="signup-link">Signup</a></p>
           </div>
         </div>
       </div>

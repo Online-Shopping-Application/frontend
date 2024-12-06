@@ -12,7 +12,7 @@ const Sidebar = () => {
     { text: "Dashboard", key: "dashboard", path: "/sellerlandingpage", icon: <SpaceDashboardIcon /> },
     { text: "Add Product", key: "addProduct", path: "/addProduct", icon: <AddShoppingCartIcon /> },
     { text: "Order List", key: "orderList", path: "/orderList", icon: <AddShoppingCartIcon /> },
-    { text: "Refund Request", key: "refundRequest", path: "/refundRequest", icon: <SpaceDashboardIcon /> },
+    // { text: "Refund Request", key: "refundRequest", path: "/refundRequest", icon: <SpaceDashboardIcon /> },
   ];
 
   return (

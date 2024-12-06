@@ -109,7 +109,7 @@ function RegisterForm() {
                 </button>
 
                 <div className='signin'>
-                    <p>Already have an account ? <a href="#" className="signin-link">Sign In</a></p>
+                    <p>Already have an account ? <a href="/login" className="signin-link">Sign In</a></p>
                 </div>
 
             </div>
