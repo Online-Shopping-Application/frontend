@@ -1,8 +1,8 @@
 // NavigationBar.jsx
-import React, { useState } from "react";
-import { AppBar, Toolbar, Typography, IconButton, Badge } from "@mui/material";
-import NotificationsIcon from "@mui/icons-material/Notifications";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
+import NotificationsIcon from "@mui/icons-material/Notifications";
+import { AppBar, Badge, IconButton, Toolbar, Typography } from "@mui/material";
+import React, { useState } from "react";
 
 const NavigationBar = ({ onLogout }) => {
   const [showProfileMenu, setShowProfileMenu] = useState(false);
@@ -17,7 +17,7 @@ const NavigationBar = ({ onLogout }) => {
     >
       <Toolbar>
         <Typography variant="h6" sx={{ flexGrow: 1 }}>
-          Seller
+          <img src="src\assets\images\logo.png" alt="" width={50} height={70}/>
         </Typography>
         <IconButton
           color="inherit"

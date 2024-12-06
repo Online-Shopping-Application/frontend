@@ -1,6 +1,6 @@
-import React from 'react'
-import GlobalRouter from './routes';
+import React from 'react';
 import { Toaster } from 'react-hot-toast';
+import GlobalRouter from './routes';
 
 
 export default function App() {
