@@ -5,6 +5,7 @@ import NotificationsIcon from "@mui/icons-material/Notifications";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import Sidebar from "../Components/Sidebar";
 import NavigationBar from "../Components/NavigationBar";
+import axios from "axios";
 
 
 
@@ -129,7 +130,17 @@ const SellerLandingPage = () => {
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [popupVisible, setPopupVisible] = useState(false);
   
-  
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        const response = await axios.get("http://localhost:8083/api/product/sellerproducts/{1}");
+        setProducts(response.data);
+      } catch (error) {
+        console.error("Error fetching products:", error);
+      }
+    };
+    fetchProducts();
+  }, []);
 
   const handleLogout = () => alert("Logged out successfully!");
   const handleNavigation = (section) => setActiveSection(section);
@@ -137,17 +148,42 @@ const SellerLandingPage = () => {
     setSelectedProduct(product);
     setPopupVisible(true);
   };
-  const handleSave = () => {
-    setProducts((prevProducts) =>
-      prevProducts.map((p) => (p.id === selectedProduct.id ? selectedProduct : p))
-    );
-    setPopupVisible(false);
+  // const handleSave = () => {
+  //   setProducts((prevProducts) =>
+  //     prevProducts.map((p) => (p.id === selectedProduct.id ? selectedProduct : p))
+  //   );
+  //   setPopupVisible(false);
+  // };
+  // const handleDelete = () => {
+  //   setProducts((prevProducts) =>
+  //     prevProducts.filter((p) => p.id !== selectedProduct.id)
+  //   );
+  //   setPopupVisible(false);
+  // };
+  const handleSave = async () => {
+    try {
+      await axios.put(`/api/products/${selectedProduct.id}`, selectedProduct);
+      setProducts((prevProducts) =>
+        prevProducts.map((p) =>
+          p.id === selectedProduct.id ? selectedProduct : p
+        )
+      );
+      setPopupVisible(false);
+    } catch (error) {
+      console.error("Error saving product:", error);
+    }
   };
-  const handleDelete = () => {
-    setProducts((prevProducts) =>
-      prevProducts.filter((p) => p.id !== selectedProduct.id)
-    );
-    setPopupVisible(false);
+
+  const handleDelete = async () => {
+    try {
+      await axios.delete(`/api/products/${selectedProduct.id}`);
+      setProducts((prevProducts) =>
+        prevProducts.filter((p) => p.id !== selectedProduct.id)
+      );
+      setPopupVisible(false);
+    } catch (error) {
+      console.error("Error deleting product:", error);
+    }
   };
   const handleChange = (field, value) => {
     setSelectedProduct({ ...selectedProduct, [field]: value });

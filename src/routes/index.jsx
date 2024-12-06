@@ -10,7 +10,7 @@ import Search from "../Components/Search";
 import SellerLandingPage from "../Components/SellerLandingPage";
 import Notification from "../Components/NotificationTest/Notification";
 import ReceiveNotification from "../Components/ReceiveNotification/ReceiveNotification";
-
+import AddProduct from "../Components/AddProduct";
 
 const GlobalRouter = () => {
     return (
@@ -23,6 +23,7 @@ const GlobalRouter = () => {
             <Route path="/sellerLandingPage" element = {<SellerLandingPage/>} />
             <Route path="/notification" element = {<Notification/>} />
             <Route path="/receive" element = {<ReceiveNotification/>} />
+            <Route path="/addProduct" element = {<AddProduct/>} />
         </Routes>
     );
 }

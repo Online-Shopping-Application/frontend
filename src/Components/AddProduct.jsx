@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Box, Typography, TextField, Grid, Button, Container } from "@mui/material";
-import Sidebar from "./Components/Sidebar";
-import NavigationBar from "./Components/NavigationBar";
+import Sidebar from "../Components/Sidebar";
+import NavigationBar from "../Components/NavigationBar";
 
 const AddProduct = ({ onAddProduct }) => {
   const [newProduct, setNewProduct] = useState({
