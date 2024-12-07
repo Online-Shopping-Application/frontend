@@ -164,8 +164,10 @@ export default function Search() {
     console.log("Selected size:", size);
   };
 
-  const handleCardClick = (id) => {
-    navigate(`/item/${id}`);
+  const handleCardClick = (item) => {
+    console.log(item);
+    
+    navigate('/item',{state:{item:item}});
   };
 
 
@@ -452,7 +454,7 @@ export default function Search() {
               }}
             >
               <Card
-                onClick={() => handleCardClick(item.id)}
+                onClick={() => handleCardClick(item)}
                 sx={{
                   width: '110%',
                   height: '27vh',
