@@ -2,9 +2,27 @@ import React from "react"
 import RegisterForm from "../../components/RegisterForm/RegisterForm"
 import imageGirl from "../../assets/images/image-girl.png"
 import "../LoginPage/Layout.css"
+import useAuth from "../../hook/useAuth.hook"
 
 
 function RegisterPage() {
+    const { register } = useAuth();
+
+    const handleFormSubmit = async(formData) => {
+      console.log("Captured Data in RegisterPage:", formData);
+      // Send the data to an API or perform further actions
+
+      try{
+        await register(formData.firstName,formData.secondName,formData.email,formData.password);
+
+      }catch(error){
+        const err = error;
+        console.log(err);
+
+      }
+
+    };
+
     return (
         <div className="app-container">
     
@@ -13,7 +31,7 @@ function RegisterPage() {
           </div>
     
           <div className="form-section">
-            <RegisterForm />
+            <RegisterForm onSubmit={handleFormSubmit} />
           </div>
         </div>
       );

@@ -9,7 +9,7 @@ function ForgotPassword() {
         <div>
             <div className="top">
                 <ArrowBackIosIcon className="back-icon" style={{ fontSize: '18px' }} />
-                <p className='back-text'>Go Back</p>
+                <a href='/login' className='back-text'>Go Back</a>
             </div>
 
             <div className='changepw-container'>
