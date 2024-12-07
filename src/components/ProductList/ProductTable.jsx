@@ -10,12 +10,13 @@ import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import SearchIcon from '@mui/icons-material/Search';
 import TextField from '@mui/material/TextField';
+import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
 import InputAdornment from '@mui/material/InputAdornment';
 import TableSortLabel from '@mui/material/TableSortLabel';
 import Button from '@mui/material/Button';
-import './ProductTable.css';
 import Rating from '@mui/material/Rating';
-
+import './ProductTable.css';
+import { useNavigate } from 'react-router-dom';
 
 function createData(id, name, category, price,  rating) {
   return {
@@ -48,6 +49,7 @@ function ProductTable() {
   const [searchQuery, setSearchQuery] = React.useState('');
   const [order, setOrder] = React.useState('asc');
   const [orderBy, setOrderBy] = React.useState('id');
+  const navigate = useNavigate();
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -66,6 +68,10 @@ function ProductTable() {
     const isAsc = orderBy === property && order === 'asc';
     setOrder(isAsc ? 'desc' : 'asc');
     setOrderBy(property);
+  };
+
+  const handleGoBack = () => {
+    navigate('/SellerList'); 
   };
 
   const handleAccept = (id) => {
@@ -201,7 +207,13 @@ function ProductTable() {
           onPageChange={handleChangePage}
           onRowsPerPageChange={handleChangeRowsPerPage}
         />
-      </Paper>   
+      </Paper>  
+      <Box sx={{ display: 'flex', alignItems: 'center', marginTop: '8px', cursor: 'pointer' }}
+      onClick={handleGoBack}
+      >
+        <ArrowBackIosNewIcon />
+        <p>Go Back</p>
+      </Box>
     </Box>
   );
 }
