@@ -14,7 +14,6 @@ const Sidebar = () => {
     { text: "Dashboard", key: "dashboard", path: "/sellerlandingpage", icon: <SpaceDashboardIcon /> },
     { text: "Add Product", key: "addProduct", path: "/addProduct", icon: <AddShoppingCartIcon /> },
     { text: "Order List", key: "orderList", path: "/orderList", icon: <AddShoppingCartIcon /> },
-    { text: "Refund List", key: "RefundList", path: "/refund-orders", icon: <MoneyOff /> },
     // { text: "Refund Request", key: "refundRequest", path: "/refundRequest", icon: <SpaceDashboardIcon /> },
   ];
 

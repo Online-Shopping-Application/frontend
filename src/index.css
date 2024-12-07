@@ -92,3 +92,16 @@ button:focus-visible {
   width: 180vh;
   height: 117vh;
 }
+
+
+
+.css-kn8pil {
+
+  width: 185vh;
+}
+
+@media (min-width: 600px) {
+  .css-uexhgd-MuiContainer-root {
+      width: 185vh;
+  }
+}
