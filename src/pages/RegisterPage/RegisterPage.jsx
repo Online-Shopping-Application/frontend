@@ -13,11 +13,13 @@ function RegisterPage() {
       // Send the data to an API or perform further actions
 
       try{
-        await register(formData.firstName,formData.secondName,formData.email,formData.password);
+        await register(formData.firstName,formData.secondName,formData.address,formData.email,formData.password,formData.role);
 
       }catch(error){
         const err = error;
-        console.log(err);
+        const { status, data } = err;
+        console.log(status);
+        console.log(data);
 
       }
 

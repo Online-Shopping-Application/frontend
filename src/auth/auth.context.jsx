@@ -1,4 +1,4 @@
-import { useReducer } from "react";
+import { useReducer, useState } from "react";
 import { useCallback } from "react";
 import { createContext } from "react";
 import { useNavigate } from "react-router-dom";
@@ -52,16 +52,20 @@ const AuthContextProvider = ({ children }) => {
         try{
             const token = getSession();
             if(token){
+                const email = "chinthaka@gmail.com";
+                const password = "1234";
                 // validate access token by calling backend
-                const response = await axiosInstance.post(ME_URL,{
-                    token
+                const response = await axiosInstance.post(LOGIN_URL,{
+                    email,
+                    password
                 });
                 // in response, we receive token and user data
-                const {newToken,userInfo} = response;
-                setSession(newToken);
+                console.log(response);
+                const { data } = response;
+                setSession(data.object.object.access_token);
                 dispatch({
                     type: "LOGIN",
-                    payload: userInfo
+                    payload: data.object
                 });
             }
             else{
@@ -89,12 +93,14 @@ const AuthContextProvider = ({ children }) => {
     },[]);
 
     // register method
-    const register = useCallback(async (firstName,lastName,email,password) => {
+    const register = useCallback(async (firstName,lastName,address,email,password,role) => {
         const response = await axiosInstance.post(REGISTER_URL,{
             firstName,
             lastName,
+            address,
             email,
             password,
+            role
         });
         console.log("Register Result : ",response);
         toast.success("Register Was Successfull, Please Login");
@@ -102,18 +108,20 @@ const AuthContextProvider = ({ children }) => {
     },[]);
 
     // login method
-    const login = useCallback(async (username,password) => {
+    const login = useCallback(async (email,password) => {
         const response = await axiosInstance.post(LOGIN_URL,{
-            username,
+            email,
             password
         });
-        const {accessToken,userInfo} = response;
-        setSession(accessToken);
+        console.log(response);
+        const { data } = response;
+        console.log(data.object.object.access_token);
+        setSession(data.object.object.access_token);
         dispatch({
             type: "LOGIN",
-            payload: userInfo
+            payload: data.object
         });
-        toast.success("Login Was Successfull");
+        toast.success(data.message);
         navigate(PATH_AFTER_LOGIN);
     },[]);
 
