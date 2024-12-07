@@ -15,7 +15,6 @@ const GlobalRouter = () => {
             <Route path={PATH_PUBLIC.passwordChange} element={<ForgotPasswordPage/>} />
             <Route path={PATH_PUBLIC.verifyOtp} element={<VerifyOtpPage/>} />
             <Route path={PATH_DASHBOARD.dashboard} element={<Search/>} />
-            <Route path={PATH_DASHBOARD.navbar} element={<Navb/>} />
         </Routes>
     );
 }
