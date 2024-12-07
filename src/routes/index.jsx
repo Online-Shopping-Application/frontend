@@ -18,6 +18,7 @@ import UsersLandingPage from "../pages/AllUsersLandingPage/UsersLandingPage";
 import ShoppingCartPage from "../pages/OrderProcessingPage/ShoppingCartPage";
 import ShoppingPage from "../pages/OrderProcessingPage/ShoppingPage";
 import OrderList from "../Components/OrderList";
+import RefundRequestPage from "../Components/RefundRequestPage";
 
 const GlobalRouter = () => {
     return (
@@ -30,6 +31,8 @@ const GlobalRouter = () => {
             <Route path={PATH_DASHBOARD.dashboard} element={<Search/>} />
             <Route path="/sellerLandingPage" element = {<SellerLandingPage/>} />
             <Route path="/orderList" element = {<OrderList/>} />
+
+            <Route path="/refund-orders" element = {<RefundRequestPage/>} />
             <Route path="/addProduct" element = {<AddProduct/>} />
             <Route path="/notification" element = {<Notification/>} />
             <Route path="/receive" element = {<ReceiveNotification/>} />
