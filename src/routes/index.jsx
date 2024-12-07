@@ -20,6 +20,10 @@ import ShoppingPage from "../pages/OrderProcessingPage/ShoppingPage";
 import OrderList from "../Components/OrderList";
 import RefundRequestPage from "../Components/RefundRequestPage";
 import Item from "../Components/Item";
+import AuthGuardForCustomer from "../auth/AuthGuardForCustomer";
+import AuthGuardForSeller from "../auth/AuthGuardForSeller";
+import AuthGuardForAdmin from "../auth/AuthGaurdForAdmin";
+import Dashboard from "../pages/Dashboard/Dashboard";
 
 const GlobalRouter = () => {
     return (
@@ -29,17 +33,35 @@ const GlobalRouter = () => {
             <Route path={PATH_PUBLIC.register} element={<RegisterPage/>} />
             <Route path={PATH_PUBLIC.passwordChange} element={<ForgotPasswordPage/>} />
             <Route path={PATH_PUBLIC.verifyOtp} element={<VerifyOtpPage/>} />
-            <Route path={PATH_DASHBOARD.dashboard} element={<Search/>} />
-            <Route path="/sellerLandingPage" element = {<SellerLandingPage/>} />
-            <Route path="/orderList" element = {<OrderList/>} />
 
-            <Route path="/refund-orders" element = {<RefundRequestPage/>} />
-            <Route path="/addProduct" element = {<AddProduct/>} />
+            <Route element={<AuthGuardForCustomer/>} >
+                <Route path={PATH_DASHBOARD.dashboard} element={<Search/>} />
+            </Route>
+
+            <Route element={<AuthGuardForSeller/>} >
+                <Route path="/sellerLandingPage" element = {<SellerLandingPage/>} />
+                <Route path="/addProduct" element = {<AddProduct/>} />
+                <Route path="/orderList" element = {<OrderList/>} />
+                <Route path="/refund-orders" element = {<RefundRequestPage/>} />
+            </Route>
+
+            <Route element={<AuthGuardForAdmin/>} >
+                <Route path="/dashboard" element={<Dashboard/>} />
+            </Route>
+
+            {/* <Route path="/sellerLandingPage" element = {<SellerLandingPage/>} /> */}
+            {/* <Route path={PATH_DASHBOARD.dashboard} element={<Search/>} /> */}
+            
+            {/* <Route path="/orderList" element = {<OrderList/>} /> */}
+
+            {/* <Route path="/refund-orders" element = {<RefundRequestPage/>} /> */}
+            {/* <Route path="/addProduct" element = {<AddProduct/>} /> */}
             <Route path="/notification" element = {<Notification/>} />
             <Route path="/receive" element = {<ReceiveNotification/>} />
             <Route path="/shopping-cart" element = {<ShoppingCartPage/>} />
             <Route path="/shopping-page" element = {<ShoppingPage/>} />
             <Route path="/item" element={<Item/>} />
+            {/* <Route path="/dashboard" element={<Dashboard/>} /> */}
         </Routes>
     );
 }

@@ -7,6 +7,7 @@ import axiosInstance from "../util/axiosInstance";
 import { LOGIN_URL, ME_URL, PATH_AFTER_LOGIN, PATH_AFTER_LOGOUT, PATH_AFTER_REGISTER, REGISTER_URL } from "../util/globalConfig";
 import { useEffect } from "react";
 import toast from "react-hot-toast";
+import { PATH_DASHBOARD } from "../routes/paths";
 
 // we need reducer function for useReducer hook
 const authReducer = (state,action) => {
@@ -122,7 +123,16 @@ const AuthContextProvider = ({ children }) => {
             payload: data.object
         });
         toast.success(data.message);
-        navigate(PATH_AFTER_LOGIN);
+        if(data.object.role.includes("seller")){
+            navigate("/sellerLandingPage");
+        }
+        else if(data.object.role.includes("customer")){
+            navigate(PATH_DASHBOARD.dashboard);
+        }
+        else if(data.object.role.includes("admin")){
+            navigate("/dashboard");
+        }
+        
     },[]);
 
     // logout method
