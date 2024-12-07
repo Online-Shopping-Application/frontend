@@ -4,8 +4,8 @@ import axios from "axios"; // Import axios
 import { Box, Grid, Typography, IconButton, CardMedia } from "@mui/material";
 
 const SelectItem = () => {
-  // const location = useLocation();
-  // const { selectedProducts } = location.state || { selectedProducts: [] };
+   const location = useLocation();
+   const { selectedProducts } = location.state || { selectedProducts: [] };
 
   const [products, setProducts] = useState([
     {
@@ -48,17 +48,34 @@ const SelectItem = () => {
   //   }
   // };
 
-  // useEffect(() => {
-  //   if (selectedProducts && selectedProducts.length > 0) {
-  //     sendSelectedProductsToBackend();
-  //   }
-  // }, [selectedProducts]); // Run this effect when selectedProducts change
+  // get selected products
+  const [product2,setProduct2] = useState([]);
+
+  const getSelectedProducts = async () => {
+
+    try{
+      const response = await axios.post("http://localhost:8082/api/order/by-ids", selectedProducts);
+      setProduct2(response.data);
+      console.log(response.data);
+    }
+    catch(err){
+      console.log(err);
+      
+    }
+
+  }
+
+  useEffect(() =>{
+    getSelectedProducts();
+  },[]);
 
   return (
     <Box sx={{ padding: 2 }}>
       <Typography variant="h4" sx={{ marginBottom: 4 }}>
         Checkout
       </Typography>
+
+      
 
       <Grid container spacing={2}>
         <Grid item xs={12}>
@@ -96,13 +113,13 @@ const SelectItem = () => {
               </Typography>
             </Box>
 
-            {products.map((product) => {
+            {product2.map((product) => {
               const subtotal =
-                product.price * product.quantity - product.discount; // Updated count to quantity
+                 product.price * product.quantity - product.discount; // Updated count to quantity
 
               return (
                 <Box
-                  key={product.id}
+                  key={product.productId}
                   sx={{
                     display: "flex",
                     flexDirection: { xs: "column", md: "row" },
@@ -116,7 +133,7 @@ const SelectItem = () => {
                     <CardMedia
                       component="img"
                       image={product.imageUrl}
-                      alt={product.name}
+                      alt={product.productName}
                       sx={{
                         width: { xs: 50, md: 60 },
                         height: { xs: 50, md: 60 },
@@ -125,15 +142,15 @@ const SelectItem = () => {
                       }}
                     />
                     <Box>
-                      <Typography>{product.name}</Typography>
+                      <Typography>{product.productName}</Typography>
                       <Typography variant="body2" sx={{ color: "#777" }}>
-                        Size: {product.size}
+                        Size: {product.productSize}
                       </Typography>
                     </Box>
                   </Box>
 
                   <Typography sx={{ width: "120px", textAlign: "center" }}>
-                    ${product.price.toFixed(2)}
+                    ${product.unitPrice.toFixed(2)}
                   </Typography>
 
                   <Box

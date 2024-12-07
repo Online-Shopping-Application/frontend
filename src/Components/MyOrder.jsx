@@ -1,15 +1,36 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { Box, Typography, Button, Card, CardMedia } from "@mui/material";
+import axios from "axios";
 import CircleIcon from "@mui/icons-material/Circle";
 
 const MyOrder = () => {
+
+  const userId = 100;
+  const [orders,setOrders]= useState([]);
+
+  const fetchOrders = async () => {
+    try {
+      const response = await axios.get(`http://localhost:8082/api/order/order-by-user/${userId}`);
+      setOrders(response.data);
+      console.log(response.data);
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  useEffect(() => {
+    fetchOrders();
+  }, []);
+
   return (
     <Box sx={{ padding: 2, backgroundColor: "#fff" }}>
       <Typography variant="h5" sx={{ marginBottom: 3, color: "#2C3E50" }}>
         My Orders
       </Typography>
-
-      <Card
+      
+      {orders.map((order) => (
+        <Card
+        key={order.orderId}
         sx={{
           display: "flex",
           alignItems: "center",
@@ -19,13 +40,7 @@ const MyOrder = () => {
           padding: 2,
         }}
       >
-        {/* Image */}
-        <CardMedia
-          component="img"
-          image=""
-          alt="Product Image"
-          sx={{ width: 50, height: 50, borderRadius: 1 }}
-        />
+        
 
         {/* Order Details */}
         <Box sx={{ flex: 1, paddingLeft: 2 }}>
@@ -33,13 +48,13 @@ const MyOrder = () => {
             variant="subtitle1"
             sx={{ fontWeight: "bold", color: "#2C3E50" }}
           >
-            Women Fit and Flare Brown Dress, Women Fit and Flare Brown Dress
+            Order Date: {order.orderDate}
           </Typography>
           <Typography variant="body2" sx={{ marginY: 0.5 }}>
-            Items: 2
+            Delivary Charges: ${order.totalDelivaryCharges}
           </Typography>
           <Typography variant="body2" sx={{ color: "#555" }}>
-            Total Price: $65.00
+            Total Price: ${order.totalCost}
           </Typography>
         </Box>
 
@@ -47,7 +62,7 @@ const MyOrder = () => {
         <Box sx={{ display: "flex", alignItems: "center", marginRight: 2 }}>
           <CircleIcon sx={{ fontSize: 12, color: "#FF5733", marginRight: 1 }} />
           <Typography variant="body2" sx={{ color: "#FF5733" }}>
-            Food Processing
+            Order Status
           </Typography>
         </Box>
 
@@ -63,9 +78,11 @@ const MyOrder = () => {
             "&:hover": { backgroundColor: "#FFBBBB" },
           }}
         >
-          Track Order
+          {order.orderStatus}
         </Button>
       </Card>
+      ))}
+      
     </Box>
   );
 };

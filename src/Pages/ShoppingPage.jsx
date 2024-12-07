@@ -13,6 +13,7 @@ const ShoppingPage = () => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
 
+  const userId = 100;
   
 
   // State for backend data
@@ -68,19 +69,25 @@ const ShoppingPage = () => {
 
   // Place Order Handler
   const handlePlaceOrder = async () => {
-    try {
-      const productData = selectedProducts.map((product) => ({
-        productId: product.productId, // Updated key
-        quantity: product.quantity, // Updated key
-      }));
+    try { 
+      const productQuantities = selectedProducts;
+      console.log("Product Quantities:", productQuantities);
+
+      const transformedData = {
+        userId,
+        productQuantities,
+      };
+      console.log("Transformed Data:", transformedData);
+      
 
       const response = await axios.post(
-        "http://localhost:8082/api/order/place-order",
-        { products: productData }
+        "http://localhost:8082/api/order/place-order", transformedData
+        
       );
-
       console.log("Order placed successfully:", response.data);
       alert("Order placed successfully!");
+
+      
     } catch (error) {
       console.error("Error placing order:", error);
       alert("Failed to place the order. Please try again.");
