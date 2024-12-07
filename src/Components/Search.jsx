@@ -7,6 +7,7 @@ import SearchIcon from '@mui/icons-material/Search';
 import axios from 'axios';
 const label = { inputProps: { 'aria-label': 'Checkbox demo' } };
 
+
 export default function Search() {
   const navigate = useNavigate();
 
@@ -166,8 +167,8 @@ export default function Search() {
 
   const handleCardClick = (item) => {
     console.log(item);
-    
-    navigate('/item',{state:{item:item}});
+
+    navigate('/item', { state: { item: item } });
   };
 
 
@@ -184,9 +185,9 @@ export default function Search() {
 
   const filterProduct = async () => {
     try {
-      console.log(value , selectedTypes , selectedColor , selectedSize);
+      console.log(value, selectedTypes, selectedColor, selectedSize);
 
-      const filterResponse = await axios.post("http://localhost:8084/api/v1/filter/filter-product",{price:value ,colour:selectedColor,size:selectedSize , type:selectedTypes})
+      const filterResponse = await axios.post("http://localhost:8084/api/v1/filter/filter-product", { price: value, colour: selectedColor, size: selectedSize, type: selectedTypes })
       console.log(filterResponse);
 
       setAllProducts(filterResponse.data.productDTO)
@@ -209,7 +210,7 @@ export default function Search() {
         <Grid item xs={4}>
           <Card
             sx={{
-              width: '45vh',
+              width: '50vh',
               height: '100%',
               padding: '10px',
               marginTop: '105px',
@@ -292,14 +293,14 @@ export default function Search() {
               APPLY
             </Button>
             <br></br><br></br>
-            <Box sx={{ padding: "16px" }}>
+            {/* <Box sx={{ padding: "16px" }}>
               <Typography variant="h7" sx={{ fontWeight: 'bold', }}>
                 CATEGORIES
               </Typography>
               <hr style={{ margin: "8px 0" }} />
               <br></br>
               <Checkbox {...label} /> All
-            </Box>
+            </Box> */}
             <Box sx={{ padding: "16px" }}>
               <Typography variant="h7" sx={{ fontWeight: "bold" }}>
                 TYPE
@@ -315,21 +316,27 @@ export default function Search() {
             </Box>
 
             <Box sx={{ padding: "16px" }}>
-              <Typography variant="h7" sx={{ fontWeight: 'bold', }}>SIZE</Typography>
+              <Typography variant="h7" sx={{ fontWeight: "bold" }}>
+                SIZE
+              </Typography>
               <hr style={{ margin: "8px 0" }} />
               <Grid container spacing={2}>
                 {sizes.map((size, index) => (
                   <Grid item xs={6} sm={3} key={index}>
                     <Box
                       sx={{
-                        border: "1px solid #ccc",
-                        width: '25px', height: '25px',
+                        border: "1px solid",
+                        width: "40px",
+                        height: "25px",
                         borderRadius: "4px",
                         textAlign: "center",
-                        borderColor: '#afafab',
-                        padding: "10px",
+                        lineHeight: "25px",
                         cursor: "pointer",
-                        '&:hover': { backgroundColor: "#f0f0f0" }
+                        transition: "background-color 0.3s ease, border-color 0.3s ease",
+                        borderColor:
+                          selectedSize === size ? "#007bff" : "#afafab", // Highlight selected size
+                        backgroundColor: selectedSize === size ? "#e6f7ff" : "#fff", // Change background for selected size
+                        "&:hover": { backgroundColor: "#f0f0f0" },
                       }}
                       onClick={() => handleSizeClick(size)}
                     >
@@ -338,10 +345,15 @@ export default function Search() {
                   </Grid>
                 ))}
               </Grid>
+              {selectedSize && (
+                <Typography sx={{ marginTop: "16px", textAlign: "center" }}>
+                  Selected Size: <strong>{selectedSize}</strong>
+                </Typography>
+              )}
             </Box>
 
-            <Box sx={{ padding: "16px"}}>
-              <Typography variant="h7" sx={{ fontWeight: 'bold', }}>
+            <Box sx={{ padding: "16px" }}>
+              <Typography variant="h7" sx={{ fontWeight: "bold" }}>
                 COLORS
               </Typography>
               <hr style={{ margin: "8px 0" }} />
@@ -356,17 +368,22 @@ export default function Search() {
                         borderRadius: "50%",
                         margin: "0 auto",
                         cursor: "pointer",
-                        '&:hover': { transform: "scale(1.1)" }
+                        boxShadow: selectedColor === color.name ? "0 0 0 4px #000" : "none", // Highlight selected color
+                        transition: "transform 0.2s ease, box-shadow 0.2s ease",
+                        "&:hover": { transform: "scale(1.1)" },
                       }}
                       onClick={() => handleColorClick(color.name)}
                     />
-
                   </Grid>
                 ))}
-
               </Grid>
+              {selectedColor && (
+                <Typography sx={{ marginTop: "16px", textAlign: "center", marginLeft: "-100px" }}>
+                  Selected Color: <strong>{selectedColor}</strong>
+                </Typography>
+              )}
             </Box>
-            <Box sx={{ padding: "16px" }}>
+            {/* <Box sx={{ padding: "16px" }}>
               <Typography variant="h7" sx={{ fontWeight: 'bold', }}>
                 LOCATION
               </Typography>
@@ -375,7 +392,7 @@ export default function Search() {
               <Checkbox {...label} />Colombo<br></br>
               <Checkbox {...label} />Kandy<br></br>
               <Checkbox {...label} />Jaffna<br></br>
-            </Box>
+            </Box> */}
           </Card>
         </Grid>
 
@@ -495,14 +512,23 @@ export default function Search() {
                     <Typography sx={{ color: 'gray', marginTop: '5px' }}>{item.description}</Typography>
                     <Typography sx={{ marginTop: '10px', fontWeight: 'bold' }}>{item.price}</Typography>
                     <Box sx={{
-                      border: 2, borderColor: '#afafab', borderStyle: 'solid', borderRadius: '4px', padding: '8px', display: 'inline-flex', justifyContent: 'center',
-                      alignItems: 'center', margin: '8px', width: '25px', height: '25px'
+                      border: 2, 
+                      borderColor: item.size === 'S' ? 'red' : '#afafab', // Correct conditional style
+                      borderStyle: 'solid', 
+                      borderRadius: '4px', 
+                      padding: '8px', 
+                      display: 'inline-flex', 
+                      justifyContent: 'center',
+                      alignItems: 'center', 
+                      margin: '8px', 
+                      width: '25px', 
+                      height: '25px'
                     }}>
                       <Typography>S</Typography>
                     </Box>
                     <Box sx={{
                       border: 2,
-                      borderColor: '#afafab',
+                      borderColor: item.size === 'M' ? 'red' : '#afafab', // Correct conditional style
                       borderStyle: 'solid',
                       borderRadius: '4px',
                       padding: '8px',
@@ -510,14 +536,14 @@ export default function Search() {
                       justifyContent: 'center',
                       alignItems: 'center',
                       margin: '8px',
-                      width: '25px',
+                      width: '30px',
                       height: '25px'
                     }}>
                       <Typography>M</Typography>
                     </Box>
                     <Box sx={{
                       border: 2,
-                      borderColor: '#afafab',
+                      borderColor: item.size === 'L' ? 'red' : '#afafab', // Correct conditional style
                       borderStyle: 'solid',
                       borderRadius: '4px',
                       padding: '8px',
@@ -532,7 +558,7 @@ export default function Search() {
                     </Box>
                     <Box sx={{
                       border: 2,
-                      borderColor: '#afafab',
+                      borderColor: item.size === 'XL' ? 'red' : '#afafab', // Correct conditional style
                       borderStyle: 'solid',
                       borderRadius: '4px',
                       padding: '8px',
@@ -540,14 +566,14 @@ export default function Search() {
                       justifyContent: 'center',
                       alignItems: 'center',
                       margin: '8px',
-                      width: '25px',
+                      width: '35px',
                       height: '25px'
                     }}>
                       <Typography>XL</Typography>
                     </Box>
                     <Box sx={{
                       border: 2,
-                      borderColor: '#afafab',
+                      borderColor: item.size === 'XXL' ? 'red' : '#afafab', // Correct conditional style
                       borderStyle: 'solid',
                       borderRadius: '4px',
                       padding: '8px',
@@ -555,7 +581,7 @@ export default function Search() {
                       justifyContent: 'center',
                       alignItems: 'center',
                       margin: '8px',
-                      width: '25px',
+                      width: '40px',
                       height: '25px'
                     }}>
                       <Typography>XXL</Typography>

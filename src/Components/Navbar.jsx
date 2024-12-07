@@ -1,3 +1,5 @@
+import './init'
+
 import * as React from 'react';
 import { styled, alpha } from '@mui/material/styles';
 import AppBar from '@mui/material/AppBar';
@@ -11,7 +13,10 @@ import Menu from '@mui/material/Menu';
 import SearchIcon from '@mui/icons-material/Search';
 import AccountCircle from '@mui/icons-material/AccountCircle';
 import NotificationsIcon from '@mui/icons-material/Notifications';
-
+import SockJS from "sockjs-client";
+import Stomp from "stompjs";
+import { useState } from 'react';
+import { useEffect } from 'react';
 
 const Search = styled('div')(({ theme }) => ({
   position: 'relative',
@@ -57,6 +62,10 @@ export default function PrimarySearchAppBar() {
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null);
   const isMenuOpen = Boolean(anchorEl);
   const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
+  const [stompClient, setStompClient] = useState(null);
+  const [connected, setConnected] = useState(false);
+  const [name, setName] = useState("");
+  const [greetings, setGreetings] = useState([]);
 
   const handleProfileMenuOpen = (event) => {
     setAnchorEl(event.currentTarget);
@@ -71,7 +80,54 @@ export default function PrimarySearchAppBar() {
     handleMobileMenuClose();
   };
 
- 
+  const connect = () => {
+    const socket = new SockJS("http://localhost:8086/stomp-endpoint");
+
+    console.log(socket);
+
+    const client = Stomp.over(socket);
+
+    client.connect({}, (frame) => {
+      setConnected(true);
+      console.log("Connected: " + frame);
+      client.subscribe("/topic/greetings", (message) => {
+        console.log(JSON.parse(message.body));
+        showGreeting(JSON.parse(message.body));
+      });
+    });
+
+    setStompClient(client);
+  };
+
+  const disconnect = () => {
+    if (stompClient) {
+      stompClient.disconnect(() => {
+        setConnected(false);
+        console.log("Disconnected");
+      });
+    }
+  };
+
+  const showGreeting = (message) => {
+    setGreetings((prevGreetings) => [...prevGreetings, message.message]);
+    alert(message.message)
+    
+  };
+
+  useEffect(() => {
+    connect()
+  }, [])
+
+
+  useEffect(() => {
+    return () => {
+      if (stompClient) {
+        stompClient.disconnect();
+      }
+    };
+  }, [stompClient]);
+
+
   const menuId = 'primary-search-account-menu';
   const renderMenu = (
     <Menu
@@ -111,7 +167,7 @@ export default function PrimarySearchAppBar() {
       open={isMobileMenuOpen}
       onClose={handleMobileMenuClose}
     >
-     
+
       <MenuItem>
         <IconButton
           size="large"
@@ -121,7 +177,6 @@ export default function PrimarySearchAppBar() {
             <NotificationsIcon />
           </Badge>
         </IconButton>
-        <p>Notifications</p>
       </MenuItem>
       <MenuItem onClick={handleProfileMenuOpen}>
         <IconButton
@@ -139,50 +194,62 @@ export default function PrimarySearchAppBar() {
   );
 
   return (
-    <Box sx={{ flexGrow: 1 ,}} >
-      <AppBar 
-        position="fixed" 
-      sx={{
-    backgroundColor: 'black',
-    height: '75px',
-    zIndex: (theme) => theme.zIndex.drawer + 1, 
-  }}
->
-  <Toolbar>
-    <IconButton
-      size="large"
-      edge="start"
-      color="inherit"
-      aria-label="open drawer"
-      sx={{ mr: 2 }}
-    >
-    </IconButton>
-   
-    <Box sx={{ flexGrow: 1 }} />
-    <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
-      <IconButton
-        size="large"
-        color="inherit"
+    <Box sx={{ flexGrow: 1, }} >
+      <AppBar
+        position="fixed"
+        sx={{
+          backgroundColor: 'black',
+          height: '75px',
+          zIndex: (theme) => theme.zIndex.drawer + 1,
+        }}
       >
-        <Badge color="error">
-          <NotificationsIcon />
-        </Badge>
-      </IconButton>
-      <IconButton
-        size="large"
-        edge="end"
-        aria-label="account of current user"
-        aria-controls={menuId}
-        aria-haspopup="true"
-        onClick={handleProfileMenuOpen}
-        color="inherit"
-      >
-        <AccountCircle />
-      </IconButton>
-    </Box>
-    <Box sx={{ display: { xs: 'flex', md: 'none' } }} />
-  </Toolbar>
-</AppBar>
+
+        {/* <p style={{color: 'white'}}>Stylo</p> */}
+
+        <Toolbar>
+          <IconButton
+            size="large"
+            edge="start"
+            color="inherit"
+            aria-label="open drawer"
+            sx={{ mr: 2 }}
+          >
+          </IconButton>
+
+          <p style={{color: 'white' , fontSize:"30px" , fontFamily:"cursive"}}>Stylo</p>
+
+          <Box sx={{ flexGrow: 1 }} />
+          
+          <Box sx={{ display: { xs: 'none', md: 'flex'} }}>
+            <IconButton
+              size="large"
+              color="inherit"
+            >
+              <Badge
+                badgeContent={
+                  greetings.length > 0 ? 1 : 0
+                }
+                color="error"
+               
+              >
+                <NotificationsIcon />
+              </Badge>
+            </IconButton>
+            <IconButton
+              size="large"
+              edge="end"
+              aria-label="account of current user"
+              aria-controls={menuId}
+              aria-haspopup="true"
+              onClick={handleProfileMenuOpen}
+              color="inherit"
+            >
+              <AccountCircle />
+            </IconButton>
+          </Box>
+          <Box sx={{ display: { xs: 'flex', md: 'none' } }} />
+        </Toolbar>
+      </AppBar>
 
       {renderMobileMenu}
       {renderMenu}

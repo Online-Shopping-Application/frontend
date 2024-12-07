@@ -1,5 +1,6 @@
-// Imports
-import React, { useState } from "react";
+import './init'
+
+import React, { useEffect, useState } from "react";
 import {
   Box,
   Paper,
@@ -20,6 +21,8 @@ import {
 import { Search as SearchIcon } from "@mui/icons-material";
 import NavigationBar from "../Components/NavigationBar";
 import Sidebar from "../Components/Sidebar";
+import SockJS from "sockjs-client";
+import Stomp from "stompjs";
 
 // Main Component
 const OrderList = () => {
@@ -46,52 +49,7 @@ const OrderList = () => {
       isEditable: false,
     },
     {
-      id: 2,
-      customerName: "Jane Smith",
-      product: "Casual Chic Dress",
-      price: 129.99,
-      date: "2024-01-12",
-      status: "pending",
-      isEditable: false,
-    },
-    {
-      id: 2,
-      customerName: "Jane Smith",
-      product: "Casual Chic Dress",
-      price: 129.99,
-      date: "2024-01-12",
-      status: "pending",
-      isEditable: false,
-    },
-    {
-      id: 2,
-      customerName: "Jane Smith",
-      product: "Casual Chic Dress",
-      price: 129.99,
-      date: "2024-01-12",
-      status: "pending",
-      isEditable: false,
-    },
-    {
-      id: 2,
-      customerName: "Jane Smith",
-      product: "Casual Chic Dress",
-      price: 129.99,
-      date: "2024-01-12",
-      status: "pending",
-      isEditable: false,
-    },
-    {
-      id: 2,
-      customerName: "Jane Smith",
-      product: "Casual Chic Dress",
-      price: 129.99,
-      date: "2024-01-12",
-      status: "pending",
-      isEditable: false,
-    },
-    {
-      id: 2,
+      id: 3,
       customerName: "Jane Smith",
       product: "Casual Chic Dress",
       price: 129.99,
@@ -101,6 +59,40 @@ const OrderList = () => {
     },
   ]);
 
+  const [stompClient, setStompClient] = useState(null);
+  const [connected, setConnected] = useState(false);
+  const [name, setName] = useState("");
+  const [greetings, setGreetings] = useState([]);
+
+  const connect = () => {
+    const socket = new SockJS("http://localhost:8086/stomp-endpoint");
+
+    console.log(socket);
+    
+    const client = Stomp.over(socket);
+
+    client.connect({}, (frame) => {
+      setConnected(true);
+      console.log("Connected: " + frame);
+
+      client.subscribe("/topic/greetings", (message) => {
+        console.log(JSON.parse(message.body));
+      });
+      
+    });
+
+    setStompClient(client);
+  };
+
+  const disconnect = () => {
+    if (stompClient) {
+      stompClient.disconnect(() => {
+        setConnected(false);
+        console.log("Disconnected");
+      });
+    }
+  };
+
   const filteredOrders = orders.filter(
     (order) =>
       order.customerName.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -108,6 +100,7 @@ const OrderList = () => {
   );
 
   const handleAccept = (orderId) => {
+    connect()
     setOrders(
       orders.map((order) =>
         order.id === orderId ? { ...order, isEditable: true } : order
@@ -125,6 +118,13 @@ const OrderList = () => {
 
   const handleStatusChange = (orderId, event) => {
     const newStatus = event.target.value;
+    console.log(newStatus);
+
+    if (stompClient) {
+      console.log(JSON.stringify({ message: `${newStatus}, Your orderId ${orderId} Check Your Order History` }));
+      stompClient.send("/app/hello", {}, JSON.stringify({ message: `${newStatus}, Your orderId ${orderId} Check Your Order History`  }));
+    }
+    
     setOrders(
       orders.map((order) =>
         order.id === orderId
@@ -143,6 +143,23 @@ const OrderList = () => {
     };
     return colors[status];
   };
+
+  
+  const sendName = () => {
+    if (stompClient) {
+      console.log(JSON.stringify({ message: name })); // Debug the sent payload
+      stompClient.send("/app/hello", {}, JSON.stringify({ message: name }));
+    }
+  };
+
+
+  useEffect(() => {
+    return () => {
+      if (stompClient) {
+        stompClient.disconnect();
+      }
+    };
+  }, [stompClient]);
 
   return (
     <Box sx={{ display: "flex" }}>
