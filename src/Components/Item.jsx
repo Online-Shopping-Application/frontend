@@ -304,16 +304,12 @@ const Item = () => {
               padding: '10px',
               width: '500px',
               fontSize: '15px',
-             
-              border: '1px solid black',
-              transition: 'all 0.3s ease-in-out',
-              '&:hover': {
-                backgroundColor: 'black',
-                color: 'white',
-                transform: 'scale(1.05)',
-                boxShadow: '0 4px 10px rgba(0, 0, 0, 0.3)',
+             '&:hover': {
                 borderColor: 'black',
               },
+              border: '1px solid black',
+              transition: 'all 0.3s ease-in-out',
+              
             }}
           >
             <ShoppingCartIcon>   </ShoppingCartIcon>
@@ -331,10 +327,6 @@ const Item = () => {
               border: '1px solid black',
               transition: 'all 0.3s ease-in-out',
               '&:hover': {
-                backgroundColor: 'white',
-                color: 'black',
-                transform: 'scale(1.05)',
-                boxShadow: '0 4px 10px rgba(0, 0, 0, 0.3)',
                 borderColor: 'black',
               },
             }}
