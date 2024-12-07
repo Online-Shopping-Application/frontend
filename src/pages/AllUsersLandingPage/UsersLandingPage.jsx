@@ -116,8 +116,8 @@ const brands = [
 function UsersLandingPage() {
 
   const [isAdmin, setIsAdmin] = useState(false);
-  const [isCustomer, setIsCustomer] = useState(true);
-  const [isSeller, setIsSeller] = useState(false);
+  const [isCustomer, setIsCustomer] = useState(false);
+  const [isSeller, setIsSeller] = useState(true);
 
   return (
     <Box>
