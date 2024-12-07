@@ -1,0 +1,14 @@
+.body-container {
+    width: 520px;
+ }
+ 
+ .pie-chart-container {
+     font-family: sans-serif;
+     margin-right: -30px;
+   }
+  
+ .chart-title-2 {
+     font-weight: bold;
+     margin-left: 120px;
+     margin-top: 18px;
+ }

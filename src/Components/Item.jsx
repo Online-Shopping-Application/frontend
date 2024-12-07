@@ -1,15 +1,22 @@
-import React, { useState } from 'react';
-import { useParams } from 'react-router-dom';
+import React, { useEffect, useState } from 'react';
+import { useLocation, useParams } from 'react-router-dom';
 import { Card, Typography, Box, Rating, Grid2, Button, TextField,} from '@mui/material';
 import PrimarySearchAppBar from './Navbar';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
+import axios from 'axios';
 
 const Item = () => {
   const { id } = useParams(); // Retrieve the item ID from the URL
+  const location = useLocation();
   const [imageLoaded, setImageLoaded] = useState(false); // Track image load status
   const [isReviewFormVisible, setReviewFormVisible] = useState(false);
   const [reviews, setReviews] = useState([]);
   const [newReview, setNewReview] = useState({ user: '', comment: '', rating: 0 });
+  const [overallResponse , setOverallResponse] = useState({});
+
+  console.log(location.state.item);
+  
+
   const itemData = [
     {
       id: 1,
@@ -164,18 +171,54 @@ const Item = () => {
     },
   ];
 
-  const item = itemData.find((item) => item.id === parseInt(id, 10)); // Find the item by ID
+  const item = location.state.item
+  // const item = itemData.find((item) => item.id === parseInt(id, 10)); // Find the item by ID
 
   if (!item) {
     return <Typography>Item not found!</Typography>;
   }
-  const handleReviewSubmit = () => {
+  const handleReviewSubmit = async() => {
+     const userId = localStorage.getItem("userId")
+  
     if (newReview.user && newReview.comment && newReview.rating > 0) {
       setReviews([...reviews, newReview]);
       setNewReview({ user: '', comment: '', rating: 0 }); // Reset form
       setReviewFormVisible(false); // Hide the form after submission
     }
+
+    console.log(newReview);
+
+    try {
+      const productId = location.state.item.productId
+      const reviewResponse = await axios.post("http://localhost:8085/api/v1/rating/createRating",{productId:productId,customerId:[userId],ratingValue:newReview.rating,feedback:newReview.comment})
+      console.log(reviewResponse);
+      window.location.reload()
+      
+    } catch (error) {
+      alert(error)
+    }
+
+
   };
+
+  const getOverallReview = async()=>{
+    try {
+      const singleProductId = location.state.item.productId
+      const overallReview = await axios.get(`http://localhost:8085/api/v1/rating/get-product/${singleProductId}`)
+
+      // console.log(overallReview.data.ratings);
+      setOverallResponse(overallReview.data.ratings)
+      
+    } catch (error) {
+      alert(error)
+    }
+  }
+
+  useEffect(()=>{
+    getOverallReview()
+  },[])
+
+
   return (
     <div>
     <PrimarySearchAppBar/>
@@ -194,7 +237,7 @@ const Item = () => {
           >
             <Box
               component="img"
-              src={item.imageUrl}
+              src={item.imgUrl}
               alt={item.name}
               onLoad={() => setImageLoaded(true)} 
               sx={{
@@ -228,8 +271,12 @@ const Item = () => {
           <Typography variant="h7">Price: {item.price}</Typography>
           <Typography>Location: {item.location}</Typography>
           <Box sx={{ display: 'flex', alignItems: 'center', marginTop: '4px' }}>
-          <Rating value={item.rating} readOnly sx={{ fontSize: '1.5rem' }} />
-          <Typography sx={{ marginLeft: '8px', fontSize: '1rem', color: 'gray' }}>( {item.rating}.0 Reviews)</Typography>
+          <Rating 
+            value={overallResponse.ratingValue || 0} // Ensure default value
+            readOnly 
+            sx={{ fontSize: '1.5rem' }} 
+        />
+          <Typography sx={{ marginLeft: '8px', fontSize: '1rem', color: 'gray' }}>( {overallResponse.ratingValue} Reviews)</Typography>
           </Box>
           <Typography sx={{ marginTop: '15px' }}>{item.description}</Typography>
           <br />
@@ -292,7 +339,7 @@ const Item = () => {
                       justifyContent: 'center', 
                       alignItems: 'center', 
                       margin: '8px', 
-                      width: '25px', 
+                      width: '45px', 
                       height: '25px' 
                     }}>
                       <Typography>XXL</Typography>
@@ -385,7 +432,7 @@ const Item = () => {
 )}
 <br></br>
 <Button
-        sx={{ backgroundColor: 'black', color: 'white', marginLeft: '300px' }}
+        sx={{ backgroundColor: 'black', color: 'white', marginLeft: '80px' , marginBottom: '50px'}}
         onClick={() => setReviewFormVisible(!isReviewFormVisible)}
       >
         Add Your Review
@@ -401,7 +448,7 @@ const Item = () => {
   sx={{
     marginBottom: '8px',
     width: '70%',
-    marginLeft: '300px',
+    marginLeft: '80px',
     '& .MuiOutlinedInput-root': {
       '& fieldset': {
         borderColor: 'black', 
@@ -426,7 +473,7 @@ const Item = () => {
             sx={{
             marginBottom: '8px',
             width: '70%',
-            marginLeft: '300px',
+            marginLeft: '80px',
             '& .MuiOutlinedInput-root': {
               '& fieldset': {
                 borderColor: 'black',
@@ -447,10 +494,10 @@ const Item = () => {
           <Rating
             value={newReview.rating}
             onChange={(e, newValue) => setNewReview({ ...newReview, rating: newValue })}
-            sx={{ marginBottom: '8px',marginLeft:'300px', }}
+            sx={{ marginBottom: '8px',marginLeft:'80px', }}
           />
           <br></br>
-          <Button variant="contained" sx={{marginLeft:'300px',backgroundColor:'white',color:'black',border:'1px solid black'}} onClick={handleReviewSubmit}>
+          <Button variant="contained" sx={{marginLeft:'80px', marginBottom:'50px',backgroundColor:'white',color:'black',border:'1px solid black'}} onClick={handleReviewSubmit}>
             Submit
           </Button>
         </Box>

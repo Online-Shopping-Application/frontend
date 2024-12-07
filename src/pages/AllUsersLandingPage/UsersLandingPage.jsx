@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   AppBar,
   Toolbar,
@@ -17,89 +17,89 @@ import "./UsersLandingPage.css";
 
 
 const products = [
-    {
-      id: 1,
-      name: "Men party wear",
-      price: "$20",
-      image: "https://assets.myntassets.com/dpr_1.5,q_60,w_400,c_limit,fl_progressive/assets/images/28984412/2024/7/15/65f9d637-2af9-4983-ba71-72b133b0753e1721017686285-INVICTUS-Men-Blazers-6781721017685771-1.jpg",
-      sizes: "S, M, L",
-      description: "A stylish and comfortable choice.",
-    },
-    {
-      id: 2,
-      name: "Denim Long sleeve",
-      price: "$30",
-      image: "https://oldnavy.gap.com/webcontent/0056/144/385/cn56144385.jpg ",
-      sizes: "M, L, XL",
-      description: "Perfect for casual outings.",
-    },
-    {
-      id: 3,
-      name: "Men round neck T-Shirts",
-      price: "$25",
-      image: "https://rukminim2.flixcart.com/image/850/1000/xif0q/t-shirt/x/u/b/m-ntc-t-211-208-full-new-trends-collection-original-imah4gkymw8rfc7t.jpeg?q=20&crop=false",
-      sizes: "S, M, L, XL",
-      description: "High-quality fabric for everyday use.",
-    },
-    {
-      id: 4,
-      name: "Floral Print Top",
-      price: "$40",
-      image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQnlRmmVWnIGfD2-7JXdFrukqD9COTqWnvP9jYtUSGS36m0Z4BV7J5ApL-epZPbXAHn5SQ&usqp=CAU",
-      sizes: "M, L, XXL",
-      description: "Elegant and durable for any occasion.",
-    },
-    {
-        id: 8,
-        name: "Barbari Silk Saree",
-        price: "$60",
-        image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRqREFCvooYHZhSgXffaQIMr4sEf-dbXBHF-8ccwdpq2XeI-GSLV4DaKHf4Iu1qnydMix0&usqp=CAU",
-        sizes: "L, XL",
-        description: "Premium materials for unmatched comfort.",
-      }
-    ,
-    {
-      id: 6,
-      name: "Floral print Top",
-      price: "$35",
-      image: "https://medias.utsavfashion.com/media/catalog/product/cache/1/small_image/295x/040ec09b1e35df139433887a97daa66f/p/r/printed-pure-cotton-kurti-in-navy-blue-v1-tuv937.jpg",
-      sizes: "S, M",
-      description: "Lightweight and perfect for summer.",
-    },
-    {
-      id: 7,
-      name: "Product 7",
-      price: "$45",
-      image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSJlavT9k3lTNSVA4gR0OB8YaMgTLigRv2Psw&s",
-      sizes: "M, L, XL",
-      description: "A classic design with a modern twist.",
-    },
-    {
-        id: 5,
-        name: "Baby frock",
-        price: "$50",
-        image: "https://5.imimg.com/data5/SELLER/Default/2022/12/DM/FX/CJ/96490378/baby-frocks.jpg",
-        sizes: "One Size",
-        description: "A versatile accessory for everyone.",
-      }
-    ,
-    {
-      id: 9,
-      name: "silk Saree",
-      price: "$70",
-      image: "https://3.imimg.com/data3/OC/JJ/MY-4793945/designer-saree-500x500.jpg",
-      sizes: "S, M, L",
-      description: "Sophisticated and practical for daily wear.",
-    },
-  ];
-  
-  const categories = [
-    { name: "Men", image: "https://thilakawardhana.com/cdn/shop/files/MENS_da71f2fd-ad52-4bec-88a8-5eb6b727c321_1570x.png?v=1723446204", link: "/login" },
-    { name: "Women", image: "https://thilakawardhana.com/cdn/shop/files/WOMENS_18c1fd44-5cad-4756-8e59-0493a0af82a5_1570x.png?v=1723446146", link: "/login" },
-    { name: "Bags and Shoes", image: "https://thilakawardhana.com/cdn/shop/files/BAGS-_--SHOES_1570x.png?v=1723445392", link: "/login" },
-    { name: "Kids", image: "https://thilakawardhana.com/cdn/shop/files/KIDS_b9b1fc65-1840-4def-ac4c-1c02b0a61e25_1570x.png?v=1723445838", link: "/login" },
-  ];
-  
+  {
+    id: 1,
+    name: "Men party wear",
+    price: "$20",
+    image: "https://assets.myntassets.com/dpr_1.5,q_60,w_400,c_limit,fl_progressive/assets/images/28984412/2024/7/15/65f9d637-2af9-4983-ba71-72b133b0753e1721017686285-INVICTUS-Men-Blazers-6781721017685771-1.jpg",
+    sizes: "S, M, L",
+    description: "A stylish and comfortable choice.",
+  },
+  {
+    id: 2,
+    name: "Denim Long sleeve",
+    price: "$30",
+    image: "https://oldnavy.gap.com/webcontent/0056/144/385/cn56144385.jpg ",
+    sizes: "M, L, XL",
+    description: "Perfect for casual outings.",
+  },
+  {
+    id: 3,
+    name: "Men round neck T-Shirts",
+    price: "$25",
+    image: "https://rukminim2.flixcart.com/image/850/1000/xif0q/t-shirt/x/u/b/m-ntc-t-211-208-full-new-trends-collection-original-imah4gkymw8rfc7t.jpeg?q=20&crop=false",
+    sizes: "S, M, L, XL",
+    description: "High-quality fabric for everyday use.",
+  },
+  {
+    id: 4,
+    name: "Floral Print Top",
+    price: "$40",
+    image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQnlRmmVWnIGfD2-7JXdFrukqD9COTqWnvP9jYtUSGS36m0Z4BV7J5ApL-epZPbXAHn5SQ&usqp=CAU",
+    sizes: "M, L, XXL",
+    description: "Elegant and durable for any occasion.",
+  },
+  {
+    id: 8,
+    name: "Barbari Silk Saree",
+    price: "$60",
+    image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRqREFCvooYHZhSgXffaQIMr4sEf-dbXBHF-8ccwdpq2XeI-GSLV4DaKHf4Iu1qnydMix0&usqp=CAU",
+    sizes: "L, XL",
+    description: "Premium materials for unmatched comfort.",
+  }
+  ,
+  {
+    id: 6,
+    name: "Floral print Top",
+    price: "$35",
+    image: "https://medias.utsavfashion.com/media/catalog/product/cache/1/small_image/295x/040ec09b1e35df139433887a97daa66f/p/r/printed-pure-cotton-kurti-in-navy-blue-v1-tuv937.jpg",
+    sizes: "S, M",
+    description: "Lightweight and perfect for summer.",
+  },
+  {
+    id: 7,
+    name: "Product 7",
+    price: "$45",
+    image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSJlavT9k3lTNSVA4gR0OB8YaMgTLigRv2Psw&s",
+    sizes: "M, L, XL",
+    description: "A classic design with a modern twist.",
+  },
+  {
+    id: 5,
+    name: "Baby frock",
+    price: "$50",
+    image: "https://5.imimg.com/data5/SELLER/Default/2022/12/DM/FX/CJ/96490378/baby-frocks.jpg",
+    sizes: "One Size",
+    description: "A versatile accessory for everyone.",
+  }
+  ,
+  {
+    id: 9,
+    name: "silk Saree",
+    price: "$70",
+    image: "https://3.imimg.com/data3/OC/JJ/MY-4793945/designer-saree-500x500.jpg",
+    sizes: "S, M, L",
+    description: "Sophisticated and practical for daily wear.",
+  },
+];
+
+const categories = [
+  { name: "Men", image: "https://thilakawardhana.com/cdn/shop/files/MENS_da71f2fd-ad52-4bec-88a8-5eb6b727c321_1570x.png?v=1723446204", link: "/login" },
+  { name: "Women", image: "https://thilakawardhana.com/cdn/shop/files/WOMENS_18c1fd44-5cad-4756-8e59-0493a0af82a5_1570x.png?v=1723446146", link: "/login" },
+  { name: "Bags and Shoes", image: "https://thilakawardhana.com/cdn/shop/files/BAGS-_--SHOES_1570x.png?v=1723445392", link: "/login" },
+  { name: "Kids", image: "https://thilakawardhana.com/cdn/shop/files/KIDS_b9b1fc65-1840-4def-ac4c-1c02b0a61e25_1570x.png?v=1723445838", link: "/login" },
+];
+
 
 const brands = [
   "https://thilakawardhana.com/cdn/shop/files/AURA_534x.jpg?v=1722711254",
@@ -114,60 +114,81 @@ const brands = [
 ];
 
 function UsersLandingPage() {
+
+  const [isAdmin, setIsAdmin] = useState(false);
+  const [isCustomer, setIsCustomer] = useState(true);
+  const [isSeller, setIsSeller] = useState(false);
+
   return (
     <Box>
-        {/* Navigation Bar */}
-    <AppBar position="sticky" className="navbarHome">
-    <Toolbar className="toolbarHome" sx={{ justifyContent: "space-between" }}>
-        {/* Logo on the left */}
-        <Box>
-        {/* <img
+      {/* Navigation Bar */}
+      <AppBar position="sticky" className="navbarHome">
+        <Toolbar className="toolbarHome" sx={{ justifyContent: "space-between" }}>
+          {/* Logo on the left */}
+          <Box>
+            {/* <img
             src='./logo.png'
             alt="Platform Logo"
             className="logo"
             style={{ height: "50px", cursor: "pointer" }}
         /> */}
-        <Typography
-            variant="h6"
-            sx={{
-              fontFamily: "'Poppins', sans-serif", 
-              fontWeight: "bold", 
-              fontSize: "24px", 
-              color: "#4A90E2", 
-              cursor: "pointer",
-            }}
-          >
-            Stylo
-          </Typography>
-        </Box>
-        
-        {/* Buttons on the right */}
-        <Box>
-        <Button
-            color="inherit"
-            href="/login"
-            className="login-button"
-            style={{ marginRight: "10px" }}
-            variant="outlined"
-        >
-            Login
-        </Button>
-        <Button
-            color="inherit"
-            href="/register"
-            className="register-button"
-            variant="outlined"
-        >
-            Register
-        </Button>
-        </Box>
-    </Toolbar>
-    </AppBar>
+            <Typography
+              variant="h6"
+              sx={{
+                fontFamily: "'Poppins', sans-serif",
+                fontWeight: "bold",
+                fontSize: "24px",
+                color: "#4A90E2",
+                cursor: "pointer",
+              }}
+            >
+              Stylo
+            </Typography>
+          </Box>
+
+
+          {setIsCustomer ? (
+            
+            <a href="/search" style={{color: "white"}}>
+              Browse Product
+            </a>
+
+          ) : (
+
+          <a href="/sellerLandingPage" style={{color: "white"}}>
+              Seller DashBoard
+          </a>
+
+        )}
+
+
+          {/* Buttons on the right */}
+          <Box>
+            <Button
+              color="inherit"
+              href="/login"
+              className="login-button"
+              style={{ marginRight: "10px" }}
+              variant="outlined"
+            >
+              Login
+            </Button>
+            <Button
+              color="inherit"
+              href="/register"
+              className="register-button"
+              variant="outlined"
+            >
+              Register
+            </Button>
+          </Box>
+        </Toolbar>
+      </AppBar>
 
       {/* Slideshow Section */}
       <Box className="slideshow-container">
         <Carousel autoPlay infiniteLoop showThumbs={false} className="carousel">
-        <div>
+          <div>
             <img src="https://thilakawardhana.com/cdn/shop/files/WEB-COVER_1.jpg?v=1723614117&width=1880" alt="Slide 3" />
           </div>
           <div>
@@ -182,43 +203,43 @@ function UsersLandingPage() {
         </Carousel>
       </Box>
 
-        {/* Most Recently Added Products */}
-        <Container className="products-section">
+      {/* Most Recently Added Products */}
+      <Container className="products-section">
         <Typography variant="h5" className="section-title">
-            NEW ARRIVALS...
+          NEW ARRIVALS...
         </Typography>
         <Grid container spacing={3}>
-            {products.map((product) => (
+          {products.map((product) => (
             <Grid item xs={12} sm={6} md={4} key={product.id}>
-                <Card className="product-card">
+              <Card className="product-card">
                 <CardMedia component="img" image={product.image} alt={product.name} />
                 <CardContent>
-                    <Typography variant="h6" className="product-name">
+                  <Typography variant="h6" className="product-name">
                     {product.name}
-                    </Typography>
-                    <Typography className="product-price">{product.price}</Typography>
-                    <Typography className="product-description">
+                  </Typography>
+                  <Typography className="product-price">{product.price}</Typography>
+                  <Typography className="product-description">
                     {product.description}
-                    </Typography>
-                    <Box className="product-sizes">
+                  </Typography>
+                  <Box className="product-sizes">
                     <Typography variant="subtitle1">Available Sizes:</Typography>
                     <Box className="sizes-container">
-                        {product.sizes.split(", ").map((size, index) => (
+                      {product.sizes.split(", ").map((size, index) => (
                         <label key={index} className="size-label">
-                            <input type="checkbox" disabled className="size-checkbox" />
-                            {size}
+                          <input type="checkbox" disabled className="size-checkbox" />
+                          {size}
                         </label>
-                        ))}
+                      ))}
                     </Box>
-                    </Box>
+                  </Box>
                 </CardContent>
-                </Card>
+              </Card>
             </Grid>
-            ))}
+          ))}
         </Grid>
-        </Container>
+      </Container>
 
-       {/* Collaborated Brands */}
+      {/* Collaborated Brands */}
       <Container className="brands-section">
         <Typography variant="h5" className="section-title">
           Collaborated Brands
@@ -238,7 +259,7 @@ function UsersLandingPage() {
             ))}
           </Box>
         </Box>
-      </Container> 
+      </Container>
       {/**prefooter------------------------------------------ */}
       <div class="pre-footer">
         <div class="pre-footer-container">

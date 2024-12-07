@@ -1,0 +1,16 @@
+
+.disable-account-button.MuiButton-root {
+    background-color: #ffffff;
+    color: red;
+    text-transform: none;
+    border-color: red;
+}
+
+
+.view-products-button.MuiButton-root {
+    background-color: #ffffff;
+    color: #0F4C81;
+    text-transform: none;
+    border-color: #0F4C81;
+    margin-right: 100px;
+}
