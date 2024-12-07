@@ -23,9 +23,9 @@ const NavigationBar = ({ onLogout }) => {
           color="inherit"
           onClick={() => setShowProfileMenu(!showProfileMenu)}
         >
-          <Badge badgeContent={3} color="error">
+          {/* <Badge badgeContent={3} color="error">
             <NotificationsIcon />
-          </Badge>
+          </Badge> */}
         </IconButton>
         <IconButton color="inherit" onClick={onLogout}>
           <AccountCircleIcon />

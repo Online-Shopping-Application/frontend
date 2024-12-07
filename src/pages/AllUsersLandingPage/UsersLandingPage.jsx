@@ -147,7 +147,7 @@ function UsersLandingPage() {
           </Box>
 
 
-          {setIsCustomer ? (
+          {isCustomer ? (
             
             <a href="/search" style={{color: "white"}}>
               Browse Product
