@@ -1,44 +1,57 @@
 .cards-container {
-    display: flex;
-    flex-direction: row; 
-    justify-content: space-around;
-    align-items: center;
-    font-family: sans-serif;
-    margin-left: 10px;
-    margin-top: 30px;
-  }
-  
-  .card {
-    width: 260px;
-    height: 90px;
-    border-radius: 8px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-    transition: transform 0.2s, box-shadow 0.2s;
-    background-color: #ffffff;
-  }
-  
-  .card:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-  }
-  
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  align-items: center;
+  font-family: 'Roboto', sans-serif;
+  margin-left: 10px;
+  margin-top: 30px;
+}
+
+.card {
+  width: 260px;
+  height: 120px;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s, box-shadow 0.2s;
+  background-color: #f2f2f2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
+}
+
+.icon {
+  font-size: 36px;
+  color: #333333;
+  margin-right: 16px;
+}
+
+.card-text {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.card-number {
+  font-size: 24px;
+  font-weight: 700;
+  color: #111111;
+}
+
+.card-label {
+  font-size: 16px;
+  color: #666666;
+}
   .icon {
     font-size: 30px;
     color: #2a2a2a;
   }
-  
-  .card-text {
-    margin-top: 5px;
-  }
-  
-  .card-number {
-    font-size: 16px;
-    font-weight: 600;
-    color: #333333;
-  }
-  
-  .card-label {
-    font-size: 14px;
-    color: #666666;
-  }
+
+ 
+ 
   

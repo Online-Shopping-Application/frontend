@@ -12,7 +12,6 @@ export default function Overview() {
                 <Cards />
                 <Box sx={{ display: 'flex', marginTop: '70px' }}>
                     <BarChart />
-                    <PieChart />
                 </Box>
             </Box>
         </div>

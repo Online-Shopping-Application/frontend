@@ -50,7 +50,7 @@ export default function SideNav({ mobileOpen, handleDrawerToggle }) {
               width: location.pathname === "/Dashboard" ? '90%' : 'auto',
               margin: location.pathname === "/Dashboard" ? '0 auto' : '0',
             }}
-            onClick={() => navigate("/Dashboard")}   //navigate to dashboard page
+            onClick={() => navigate("/admin-dashboard")}   //navigate to dashboard page
           >
             <ListItemIcon style={{ color: location.pathname === "/Dashboard" ? '#FFFFFF' : '#000000' }}>
               <SpaceDashboardIcon style={{ fontSize: '30' }} />
@@ -73,7 +73,7 @@ export default function SideNav({ mobileOpen, handleDrawerToggle }) {
               width: location.pathname === "/SellerList" ? '90%' : 'auto',
               margin: location.pathname === "/SellerList" ? '0 auto' : '0',
             }}
-            onClick={() => navigate("/SellerList")} //navigate to Seller List page
+            onClick={() => navigate("/seller-list")} //navigate to Seller List page
           >
             <ListItemIcon style={{ color: location.pathname === "/SellerList" ? '#FFFFFF' : '#000000' }}>
               <ManageAccountsRoundedIcon style={{ fontSize: '30' }} />
@@ -96,7 +96,7 @@ export default function SideNav({ mobileOpen, handleDrawerToggle }) {
               width: location.pathname === "/ViewRequests" ? '90%' : 'auto',
               margin: location.pathname === "/ViewRequests" ? '0 auto' : '0',
             }}
-            onClick={() => navigate("/ViewRequests")}  //navigate to My Profile page
+            onClick={() => navigate("/view-requests")}  //navigate to My Profile page
           >
             <ListItemIcon style={{ color: location.pathname === "/ViewRequests" ? '#FFFFFF' : '#000000' }}>
               <ManageSearchTwoToneIcon style={{ fontSize: '30' }} />

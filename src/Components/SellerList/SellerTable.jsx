@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import axios from 'axios';
 import Box from '@mui/material/Box';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
@@ -14,55 +15,53 @@ import InputAdornment from '@mui/material/InputAdornment';
 import TableSortLabel from '@mui/material/TableSortLabel';
 import Button from '@mui/material/Button';
 import { useNavigate } from 'react-router-dom';
-import './SellerTable.css';
-
-
-function createData(id, name, email) {
-  return {
-    id,
-    name,
-    email,
-  };
-}
-
-const rows = [
-  createData('S001', 'Seller One', 'seller1@example.com'),
-  createData('S002', 'Seller Two', 'seller2@example.com'),
-  createData('S003', 'Seller Three', 'seller3@example.com'),
-  createData('S004', 'Seller Four', 'seller4@example.com'),
-  createData('S005', 'Seller Five', 'seller5@example.com'),
-  createData('S006', 'Seller Six', 'seller6@example.com'),
-  createData('S007', 'Seller Three', 'seller3@example.com'),
-  createData('S008', 'Seller Four', 'seller4@example.com'),
-  createData('S009', 'Seller Five', 'seller5@example.com'),
-  createData('S010', 'Seller Six', 'seller6@example.com'),
-  createData('S011', 'Seller Five', 'seller5@example.com'),
-  createData('S012', 'Seller Six', 'seller6@example.com'),
-];
 
 function SellerTable() {
-  const [selected] = React.useState([]);
-  const [page, setPage] = React.useState(0);
-  const [dense] = React.useState(false);
-  const [rowsPerPage, setRowsPerPage] = React.useState(5);
-  const [searchQuery, setSearchQuery] = React.useState('');
-  const [order, setOrder] = React.useState('asc');
-  const [orderBy, setOrderBy] = React.useState('id');
+  const [sellers, setSellers] = useState([]);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(5);
+  const [order, setOrder] = useState('asc');
+  const [orderBy, setOrderBy] = useState('id');
   const navigate = useNavigate();
 
-  const [accountStatus, setAccountStatus] = React.useState(
-    rows.reduce((acc, row) => {
-      acc[row.id] = 'Disable Account';
-      return acc;
-    }, {})
-  );
+  // Fetch sellers from backend
+  useEffect(() => {
+    axios
+      .get('http://localhost:8080/api/getSellers')
+      .then((response) => {
+        setSellers(response.data);
+      })
+      .catch((error) => {
+        console.error('Error fetching sellers:', error);
+      });
+  }, []);
 
+  // Toggle account status via API
+  const handleToggleAccountStatus = (id, isActive) => {
+    const apiUrl = isActive
+      ? `http://localhost:8080/api/user/${id}/disable`
+      : `http://localhost:8080/api/user/${id}/enable`;
 
-  const handleToggleAccountStatus = (id) => {
-    setAccountStatus((prevStatus) => ({
-      ...prevStatus,
-      [id]: prevStatus[id] === 'Disable Account' ? 'Enable Account' : 'Disable Account',
-    }));
+    axios
+      .put(apiUrl)
+      .then(() => {
+        // Log the action
+        console.log(`Seller ID: ${id} is now ${isActive ? 'Disabled' : 'Enabled'}`);
+
+        // After API call, reload the seller data to reflect updated statuses
+        axios
+          .get('http://localhost:8080/api/getSellers')
+          .then((response) => {
+            setSellers(response.data);
+          })
+          .catch((error) => {
+            console.error('Error fetching updated sellers:', error);
+          });
+      })
+      .catch((error) => {
+        console.error('Error updating seller status:', error);
+      });
   };
 
   const handleChangePage = (event, newPage) => {
@@ -85,40 +84,35 @@ function SellerTable() {
   };
 
   const handleViewProducts = (id) => {
-    navigate(`/ProductList/${id}`); // Navigate to the product table with the seller ID
+    navigate(`/product-list/${id}`);
   };
 
-  const filteredRows = rows.filter((row) => {
-    return (
-      row.id.toString().includes(searchQuery) ||
-      row.name.toLowerCase().includes(searchQuery.toLowerCase())
-    );
-  });
+  const filteredSellers = sellers.filter((seller) =>
+    (seller.id.toString().includes(searchQuery) || seller.name?.toLowerCase().includes(searchQuery.toLowerCase()))
+  );
 
-
-  const sortedRows = React.useMemo(() => {
-    return filteredRows.sort((a, b) => {
+  const sortedSellers = React.useMemo(() => {
+    return filteredSellers.sort((a, b) => {
       if (orderBy === 'id') {
-        return order === 'asc' ? a.id.localeCompare(b.id) : b.id.localeCompare(a.id);
+        return order === 'asc' ? a.id - b.id : b.id - a.id;
       }
       return 0;
     });
-  }, [filteredRows, order, orderBy]);
+  }, [filteredSellers, order, orderBy]);
 
+  const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - sortedSellers.length) : 0;
 
-  const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - sortedRows.length) : 0;
-
-  const visibleRows = React.useMemo(() => sortedRows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage), [page, rowsPerPage, sortedRows]);
+  const visibleRows = React.useMemo(() => sortedSellers.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage), [page, rowsPerPage, sortedSellers]);
 
   return (
-    <Box sx={{ width: '100%' }}>
+    <Box sx={{ width: '100%', marginTop: '30px' }}>
       <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-      <h1>Sellers</h1>
+        <h1>Sellers</h1>
         <TextField
           value={searchQuery}
           onChange={handleSearchChange}
           placeholder="Search by id or name.."
-          sx={{ marginTop: '20px', width: '350px' }}
+          sx={{  width: '350px' }}
           InputProps={{
             startAdornment: (
               <InputAdornment position="start">
@@ -127,80 +121,86 @@ function SellerTable() {
             ),
             sx: { height: '40px' },
           }}
-        /> 
+        />
       </Box>
       <Paper sx={{ width: '100%' }}>
-        <TableContainer sx={{ maxHeight: 470 }}>
-          <Table stickyHeader sx={{ minWidth: 750 }} aria-labelledby="tableTitle" size={dense ? 'small' : 'medium'} >
-            <TableHead>
-              <TableRow sx={{ backgroundColor: 'black' }}>
-                <TableCell sx={{ fontWeight: 'bold', color: 'white', backgroundColor: 'black' }}>
-                  <TableSortLabel
-                    active={orderBy === 'id'}
-                    direction={orderBy === 'id' ? order : 'asc'}
-                    onClick={(event) => handleRequestSort(event, 'id')}
-                    sx={{
-                      color: 'white',
-                      '& .MuiTableSortLabel-icon': {
-                        color: 'white !important',
-                      },
-                      '&.MuiTableSortLabel-root': {
-                        color: 'white',
-                      },
-                    }}
-                  >
-                    Seller Id
-                  </TableSortLabel>
-                </TableCell>
-                <TableCell sx={{ fontWeight: 'bold', color: 'white', backgroundColor: 'black' }}>
-                  Seller Name
-                </TableCell>
-                <TableCell sx={{ fontWeight: 'bold', color: 'white', backgroundColor: 'black' }}>
-                  Email
-                </TableCell>
-                <TableCell sx={{ paddingLeft: '320px', fontWeight: 'bold', color: 'white', backgroundColor: 'black' }}>
-                  Actions
-                </TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {visibleRows.map((row) => {
-                const isItemSelected = selected.includes(row.id);
-                const labelId = `seller-checkbox-${row.id}`;
+      <TableContainer sx={{ maxHeight: 470 ,marginTop: '30px'}}>
+  <Table stickyHeader sx={{ minWidth: 1200 }}>
+    <TableHead>
+      <TableRow>
+        <TableCell sx={{ width: 20 }}> {/* Set width for Seller Id column */}
+          <TableSortLabel
+            active={orderBy === 'id'}
+            direction={orderBy === 'id' ? order : 'asc'}
+            onClick={(event) => handleRequestSort(event, 'id')}
+          >
+            Seller Id
+          </TableSortLabel>
+        </TableCell>
+        <TableCell sx={{ width: 30 }}> {/* Set width for Seller Name column */}
+          Seller Name
+        </TableCell>
+        <TableCell sx={{ width: 100 }}> {/* Set width for Email column */}
+          Email
+        </TableCell>
+        <TableCell sx={{ width: 100 }}> {/* Set width for Active column */}
+          Active
+        </TableCell>
+        <TableCell sx={{ width: 200 }}> {/* Set width for Actions column */}
+          Actions
+        </TableCell>
+      </TableRow>
+    </TableHead>
+    <TableBody>
+      {visibleRows.map((seller) => (
+        <TableRow key={seller.id}>
+          <TableCell>{seller.id}</TableCell>
+          <TableCell>{seller.name || 'N/A'}</TableCell>
+          <TableCell>{seller.email || 'N/A'}</TableCell>
+          <TableCell>{seller.active ? 'Active' : 'Inactive'}</TableCell>
+          <TableCell>
+          <Button
+  variant="outlined"
+  onClick={() => handleToggleAccountStatus(seller.id, seller.active)}
+  sx={{
+    backgroundColor: seller.active ? 'red' : 'blue',
+    color: 'white',
+    '&:hover': {
+      backgroundColor: seller.active ? 'darkblue' : 'darkred',
+    },
+    width: '180px',
+    marginLeft: '10px', 
+  }}
+>
+  {seller.active ? 'Disable Account' : 'Enable Account'}
+</Button>
 
-                return (
-                  <TableRow key={row.id} selected={isItemSelected}>
-                    <TableCell>{row.id}</TableCell>
-                    <TableCell>{row.name}</TableCell>
-                    <TableCell>{row.email}</TableCell>
-                    <TableCell sx={{ display: 'flex', justifyContent: 'flex-end' }}>
-                      <Button
-                        className='disable-account-button'
-                        variant="outlined"
-                        onClick={() => handleToggleAccountStatus(row.id)}
-                      >
-                        {accountStatus[row.id]}
-                      </Button>
-                      <Box sx={{ width: 10 }} /> {/* Add space between buttons */}
-                      <Button className='view-products-button' variant="outlined" onClick={() => handleViewProducts(row.id)}>
-                        View Products
-                      </Button>
-                    </TableCell>
-                  </TableRow>
-                );
-              })}
-              {emptyRows > 0 && (
-                <TableRow style={{ height: (dense ? 33 : 53) * emptyRows }}>
-                  <TableCell colSpan={6} />
-                </TableRow>
-              )}
-            </TableBody>
-          </Table>
-        </TableContainer>
+<Button
+  variant="outlined"
+  onClick={() => handleViewProducts(seller.id)}
+  sx={{
+    marginLeft: '10px',
+    width: '180px',
+  }}
+>
+  View Products
+</Button>
+
+          </TableCell>
+        </TableRow>
+      ))}
+      {emptyRows > 0 && (
+        <TableRow style={{ height: 53 * emptyRows }}>
+          <TableCell colSpan={5} />
+        </TableRow>
+      )}
+    </TableBody>
+  </Table>
+</TableContainer>
         <TablePagination
           rowsPerPageOptions={[5, 10, 25]}
           component="div"
-          count={rows.length}
+          count={sortedSellers.length}
           rowsPerPage={rowsPerPage}
           page={page}
           onPageChange={handleChangePage}

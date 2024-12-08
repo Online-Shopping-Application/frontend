@@ -19,6 +19,10 @@ import ShoppingCartPage from "../pages/OrderProcessingPage/ShoppingCartPage";
 import ShoppingPage from "../pages/OrderProcessingPage/ShoppingPage";
 import OrderList from "../Components/OrderList";
 import RefundRequestPage from "../Components/RefundRequestPage";
+import AdminDashboard from "../pages/Dashboard/Dashboard";
+import SellerList from "../pages/SellerListPage/SellerList";
+import ProductList from "../pages/ProductListPage/ProductList";
+import ProductRequest from "../pages/ViewRequestsPage/ViewRequests";
 
 const GlobalRouter = () => {
     return (
@@ -38,6 +42,12 @@ const GlobalRouter = () => {
             <Route path="/receive" element = {<ReceiveNotification/>} />
             <Route path="/shopping-cart" element = {<ShoppingCartPage/>} />
             <Route path="/shopping-page" element = {<ShoppingPage/>} />
+            <Route path="/admin-dashboard" element = {<AdminDashboard/>} />
+            <Route path="/seller-list" element = {<SellerList/>} />
+            <Route path="/product-list/:id" element = {<ProductList/>} />
+            <Route path="/view-requests" element = {<ProductRequest/>} />
+    
+
         </Routes>
     );
 }

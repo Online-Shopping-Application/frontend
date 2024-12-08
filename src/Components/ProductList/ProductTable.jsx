@@ -1,3 +1,4 @@
+
 import * as React from 'react';
 import Box from '@mui/material/Box';
 import Table from '@mui/material/Table';
@@ -10,38 +11,17 @@ import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import SearchIcon from '@mui/icons-material/Search';
 import TextField from '@mui/material/TextField';
-import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
 import InputAdornment from '@mui/material/InputAdornment';
 import TableSortLabel from '@mui/material/TableSortLabel';
 import Button from '@mui/material/Button';
 import Rating from '@mui/material/Rating';
+import axios from 'axios';
+import { useParams } from 'react-router-dom';
 import './ProductTable.css';
-import { useNavigate } from 'react-router-dom';
-
-function createData(id, name, category, price,  rating) {
-  return {
-    id,
-    name,
-    category,
-    price,
-    rating,
-  };
-}
-
-const rows = [
-  createData('P001', 'Product One', 'Tshirt', '$300', 4),
-  createData('P002', 'Product Two', 'Casual', '$40', 3),
-  createData('P003', 'Product Three', 'Shirts', '$100', 5),
-  createData('P004', 'Product Four', 'Saree', '$80', 2),
-  createData('P005', 'Product Five', 'Blouse', '$40', 3),
-  createData('P006', 'Product Six', 'Skirts', '$400', 5),
-  createData('P007', 'Product Seven', 'Trousers', '$800', 6),
-  createData('P008', 'Product Eight', 'Casual', '$150', 3),
-  createData('P009', 'Product Nine', 'Tshirts', '$230',2),
-  createData('P010', 'Product Ten', 'Skirts', '$400',1),
-];
 
 function ProductTable() {
+  const { id: sellerId } = useParams(); // Get sellerId from the URL
+  const [products, setProducts] = React.useState([]);
   const [selected] = React.useState([]);
   const [page, setPage] = React.useState(0);
   const [dense] = React.useState(false);
@@ -49,7 +29,19 @@ function ProductTable() {
   const [searchQuery, setSearchQuery] = React.useState('');
   const [order, setOrder] = React.useState('asc');
   const [orderBy, setOrderBy] = React.useState('id');
-  const navigate = useNavigate();
+
+  // Fetch data from API
+  React.useEffect(() => {
+    if (sellerId) {
+      axios.get(`http://localhost:8080/api/products/user/${sellerId}`)
+        .then(response => {
+          setProducts(response.data); // Assuming API response is an array of products
+        })
+        .catch(error => {
+          console.error('Error fetching products:', error);
+        });
+    }
+  }, [sellerId]); // Re-fetch data if sellerId changes
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -69,24 +61,26 @@ function ProductTable() {
     setOrder(isAsc ? 'desc' : 'asc');
     setOrderBy(property);
   };
-
-  const handleGoBack = () => {
-    navigate('/SellerList'); 
-  };
-
-  const handleAccept = (id) => {
-    // Handle accept action
-    console.log(`Accepted product with id: ${id}`);
-  };
-
   const handleReject = (id) => {
-    // Handle reject action
-    console.log(`Rejected product with id: ${id}`);
+    const confirmDelete = window.confirm("Are you sure you want to delete this product?");
+    if (confirmDelete) {
+      // Make a DELETE request to the backend API
+      axios.delete(`http://localhost:8080/api/products/${id}`)
+        .then((response) => {
+          console.log(`Product with ID: ${id} has been removed.`);
+        
+          setProducts((prevProducts) => prevProducts.filter(product => product.id !== id));
+        })
+        .catch((error) => {
+          console.error('Error removing product:', error);
+        });
+    }
   };
+  
 
-  const filteredRows = rows.filter((row) => {
+  const filteredRows = products.filter((row) => {
     return (
-      row.id.toString().includes(searchQuery) || 
+      row.id.toString().includes(searchQuery) ||
       row.category.toLowerCase().includes(searchQuery.toLowerCase())
     );
   });
@@ -95,42 +89,41 @@ function ProductTable() {
     return filteredRows.sort((a, b) => {
       if (orderBy === 'id') {
         return order === 'asc' ? a.id.localeCompare(b.id) : b.id.localeCompare(a.id);
-      } 
+      }
       return 0;
     });
   }, [filteredRows, order, orderBy]);
-
 
   const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - sortedRows.length) : 0;
 
   const visibleRows = React.useMemo(() => sortedRows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage), [page, rowsPerPage, sortedRows]);
 
   return (
-    <Box sx={{ width: '100%'}}>
-        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-      <h1>Products</h1>
-      <TextField
-        value={searchQuery}
-        onChange={handleSearchChange}
-        placeholder="Search by id or category.."
-        sx={{ marginTop: '20px', width: '350px' }}
-        InputProps={{
-          startAdornment: (
-            <InputAdornment position="start">
-              <SearchIcon />
-            </InputAdornment>
-          ),
-          sx: { height: '40px' },
-        }}
-      />
+    <Box sx={{ width: '100%' }}>
+      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        <h1>Products</h1>
+        <TextField
+          value={searchQuery}
+          onChange={handleSearchChange}
+          placeholder="Search by id or category.."
+          sx={{ marginTop: '20px', width: '350px' }}
+          InputProps={{
+            startAdornment: (
+              <InputAdornment position="start">
+                <SearchIcon />
+              </InputAdornment>
+            ),
+            sx: { height: '40px' },
+          }}
+        />
       </Box>
-      <Paper sx={{ width: '100%'}}>
+      <Paper sx={{ width: '100%' }}>
         <TableContainer sx={{ maxHeight: 470 }}>
-          <Table stickyHeader sx={{ minWidth: 750 }} aria-labelledby="tableTitle" size={dense ? 'small' : 'medium'} >
+          <Table stickyHeader sx={{ minWidth: 750 }} aria-labelledby="tableTitle" size={dense ? 'small' : 'medium'}>
             <TableHead>
               <TableRow sx={{ backgroundColor: 'black' }}>
-                <TableCell  sx={{ fontWeight: 'bold', color: 'white', backgroundColor: 'black' }}>
-                <TableSortLabel
+                <TableCell sx={{ fontWeight: 'bold', color: 'white', backgroundColor: 'black' }}>
+                  <TableSortLabel
                     active={orderBy === 'id'}
                     direction={orderBy === 'id' ? order : 'asc'}
                     onClick={(event) => handleRequestSort(event, 'id')}
@@ -148,19 +141,19 @@ function ProductTable() {
                   </TableSortLabel>
                 </TableCell>
                 <TableCell sx={{ fontWeight: 'bold', color: 'white', backgroundColor: 'black' }}>
-                    Product Name
+                  Product Name
                 </TableCell>
-                <TableCell sx={{ fontWeight: 'bold', color: 'white', backgroundColor: 'black' }}> 
-                    Category
+                <TableCell sx={{ fontWeight: 'bold', color: 'white', backgroundColor: 'black' }}>
+                  Category
                 </TableCell>
-                <TableCell sx={{ fontWeight: 'bold', color: 'white', backgroundColor: 'black' }}> 
-                    Price ($)
+                <TableCell sx={{ fontWeight: 'bold', color: 'white', backgroundColor: 'black' }}>
+                  Price ($)
                 </TableCell>
-                <TableCell sx={{ fontWeight: 'bold', color: 'white', backgroundColor: 'black' }}> 
-                    Rating
+                <TableCell sx={{ fontWeight: 'bold', color: 'white', backgroundColor: 'black' }}>
+                  Rating
                 </TableCell>
-                <TableCell sx={{ paddingLeft: '160px', fontWeight: 'bold',  color: 'white', backgroundColor: 'black'}}>
-                    Actions
+                <TableCell sx={{ paddingLeft: '160px', fontWeight: 'bold', color: 'white', backgroundColor: 'black' }}>
+                  Actions
                 </TableCell>
               </TableRow>
             </TableHead>
@@ -176,17 +169,17 @@ function ProductTable() {
                     <TableCell>{row.category}</TableCell>
                     <TableCell>{row.price}</TableCell>
                     <TableCell>
-                    <Rating name={`rating-${row.id}`} value={row.rating} readOnly />
-                  </TableCell>
+                      <Rating name={`rating-${row.id}`} value={row.rating} readOnly />
+                    </TableCell>
                     <TableCell sx={{ display: 'flex', justifyContent: 'flex-end' }}>
-                      
-                     
-                      <Button className='reject-button' variant="outlined"
-                      onClick={() => handleReject(row.id)}
+                      <Button
+                        className="reject-button"
+                        variant="outlined"
+                        onClick={() => handleReject(row.id)}
                       >
                         Remove product
                       </Button>
-                    </TableCell> 
+                    </TableCell>
                   </TableRow>
                 );
               })}
@@ -201,19 +194,13 @@ function ProductTable() {
         <TablePagination
           rowsPerPageOptions={[5, 10, 25]}
           component="div"
-          count={rows.length}
+          count={products.length}
           rowsPerPage={rowsPerPage}
           page={page}
           onPageChange={handleChangePage}
           onRowsPerPageChange={handleChangeRowsPerPage}
         />
-      </Paper>  
-      <Box sx={{ display: 'flex', alignItems: 'center', marginTop: '8px', cursor: 'pointer' }}
-      onClick={handleGoBack}
-      >
-        <ArrowBackIosNewIcon />
-        <p>Go Back</p>
-      </Box>
+      </Paper>
     </Box>
   );
 }

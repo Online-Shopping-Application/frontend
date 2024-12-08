@@ -1,117 +1,169 @@
-import React, { useState } from 'react';
-import { Card, CardContent, CardMedia, Typography, Grid,  Button, Box } from '@mui/material';
-
-const products = [
-  {
-    id: "P001",
-    imageUrl: 'https://styleunion.in/cdn/shop/products/JGPF00037RED_1_ecca3ce8-dca8-4ad4-be3d-aab7ae0d57a3.jpg?v=1704717803&width=1200',
-    name: 'Girls Regular Fit Printed Frock',
-    price: '$200',
-    category: 'Kids frock',
-    description: 'This is the description of kids frock. It provides more details about the product.',
-    sellerId: "S001",
-    sellerName: "Seller One"
-  },
-  {
-    id: " P006",
-    imageUrl: 'https://finebrandz.lk/cdn/shop/products/23P3089C5786I---20B_700x.jpg?v=1680065771',
-    name: 'Plane Color Crew Neck T shirts ( Mal Material )',
-    price: '$200',
-    category: 'Casual Wear',
-    description: 'This is the description of T shirt. It provides more details about the product.',
-    sellerId: "S004",
-    sellerName: "Seller Four"
-  },
-  {
-    id: "P013",
-    imageUrl: 'https://shop.mango.com/assets/rcs/pics/static/T6/fotos/S/67010664_56_B.jpg?imwidth=2048&imdensity=1&ts=1699263210956',
-    name: 'Cotton cargo trousers',
-    price: '$200',
-    category: 'Mens trouser',
-    description: 'This is the description of trouser. It provides more details about the product.',
-    sellerId: "S011",
-    sellerName: "Seller Three"
-  },
-]
+import React, { useState, useEffect } from 'react';
+import { Card, CardContent, CardMedia, Typography, Grid, Button, Box } from '@mui/material';
+import axios from 'axios';
+import fashionGirlImage from '../../assets/images/fashion-girl.png';
+import noRequestImage from '../../assets/images/no-request.jpg'; 
 
 function RequestForm() {
-  
-  const handleAccept = (productId) => {
-    console.log(`Accepted product with ID: ${productId}`);
+  const [products, setProducts] = useState([]);
+
+  // Fetch data from the backend
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        const response = await axios.get('http://localhost:8083/api/product/unapproved-products');
+        setProducts(response.data); // Assuming the API returns an array of products
+      } catch (error) {
+        console.error('Error fetching products:', error);
+      }
+    };
+
+    fetchProducts();
+  }, []);
+
+  const handleAccept = async (productId) => {
+    const confirmAccept = window.confirm('Are you sure you want to accept this product?');
+    if (confirmAccept) {
+      try {
+        // Send PUT request to approve the product
+        const response = await axios.put(`http://localhost:8083/api/product/approve/${productId}`);
+
+        if (response.status === 200) {
+          console.log(`Product with ID ${productId} has been approved`);
+
+          // Remove the approved product from the products list
+          setProducts((prevProducts) => prevProducts.filter((product) => product.productId !== productId));
+        }
+      } catch (error) {
+        console.error('Error approving product:', error);
+      }
+    } else {
+      console.log('Product approval canceled');
+    }
   };
 
-  const handleReject = (productId) => {
-    console.log(`Rejected product with ID: ${productId}`);
+  const handleReject = async (productId) => {
+    const confirmReject = window.confirm('Are you sure you want to reject this product?');
+    if (confirmReject) {
+      try {
+        // Send a request to reject the product if necessary
+        const response = await axios.put(`http://localhost:8083/api/product/reject/${productId}`);
+
+        if (response.status === 200) {
+          console.log(`Product with ID ${productId} has been rejected`);
+
+          // Optionally, remove the rejected product from the list
+          setProducts((prevProducts) => prevProducts.filter((product) => product.productId !== productId));
+        }
+      } catch (error) {
+        console.error('Error rejecting product:', error);
+      }
+    } else {
+      console.log('Product rejection canceled');
+    }
   };
 
   return (
-    <Grid container spacing={5} direction="column">
-      {products.map((product) => (
-        <Grid item key={product.id}>
-          <Card>
-            <Grid container>
-              <Grid item xs={3}>
-                <CardMedia
-                  component="img"
-                  sx={{ height: '250px', objectFit: 'cover' }}
-                  image={product.imageUrl}
-                  alt={product.name}
-                />
-              </Grid>
-              <Grid item xs={8}>
-                <CardContent sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
-                  <Typography gutterBottom variant="h6" component="div">
-                  {product.id} - {product.name}
-                  </Typography>
-                  <Typography
-                    variant="body2"
-                  > Seller ID: {product.sellerId}
-                  </Typography>
-                  <Typography
-                    variant="body2"
-                  > Seller Name: {product.sellerName}
-                  </Typography>
-                  <Typography variant="body2" color="text.secondary">
-                    Category: {product.category}
-                  </Typography>
-                  <Typography variant="body2" color="text.secondary">
-                    Price: {product.price}
-                  </Typography>
-                  <Typography variant="body2" color="text.secondary">
-                    Description: {product.description}
-                  </Typography>
-                  <Box sx={{ display: 'flex', gap: 2, marginTop: 'auto' }}>
-                    <Button
-                      variant="contained"
-                      sx={{
-                        textTransform: 'none',
-                        backgroundColor: 'black',
-                        color: 'white',
-                        '&:hover': { backgroundColor: '#333' },
-                      }}
-                      onClick={() => handleAccept(product.id)}
-                    >
-                      Accept
-                    </Button>
-                    <Button
-                      variant="contained"
-                      sx={{
-                        textTransform: 'none',
-                        backgroundColor: 'red',
-                        color: 'white',
-                        '&:hover': { backgroundColor: '#b71c1c' },
-                      }}
-                      onClick={() => handleReject(product.id)}
-                    >
-                      Reject
-                    </Button>
-                    </Box>
-                </CardContent>
-              </Grid>
-            </Grid>
-          </Card>
+    <Grid container spacing={2} sx={{ padding: 2, justifyContent: 'center', height: '100vh', alignItems: 'center' }}>
+      {products.length === 0 ? (
+        <Grid item xs={12} sx={{ display: 'flex', justifyContent: 'center', flexDirection: 'column', alignItems: 'center' }}>
+          <Box sx={{ textAlign: 'center', marginBottom: 40 }}>
+            <CardMedia
+              component="img"
+              sx={{ width: 250, height: 250, objectFit: 'contain'}}
+              image={noRequestImage} // Use your 'no request' image here
+              alt="No product request"
+            />
+            <Typography variant="h6" sx={{ fontWeight: 'bold'}}>
+              No Product Requests
+            </Typography>
+          </Box>
         </Grid>
-      ))}
+      ) : (
+        products.map((product, index) => (
+          <Grid item xs={12} sx={{ display: 'flex', justifyContent: 'center' }} key={index}>
+            <Card
+              sx={{
+                width: 1000, // Set card width to 800px
+                display: 'flex',
+                flexDirection: 'row',
+                alignItems: 'center',
+                boxShadow: '0px 4px 12px rgba(0, 0, 0, 0.1)',
+                borderRadius: '12px',
+                overflow: 'hidden',
+                transition: 'transform 0.3s ease, box-shadow 0.3s ease',
+                '&:hover': {
+                  boxShadow: '0px 8px 20px rgba(0, 0, 0, 0.2)',
+                },
+              }}
+            >
+              <CardMedia
+                component="img"
+                sx={{
+                  width: 200,
+                  height: '100%',
+                  objectFit: 'cover',
+                }}
+                image={product.imgUrl || fashionGirlImage} // Fallback image if none provided
+                alt={product.description}
+              />
+              <CardContent
+                sx={{
+                  flex: 1,
+                  display: 'flex',
+                  flexDirection: 'column',
+                  justifyContent: 'space-between',
+                }}
+              >
+                <Typography gutterBottom variant="h6" component="div" sx={{ fontWeight: 'bold' }}>
+                  {product.type} - ${product.price}
+                </Typography>
+                <Typography variant="body2" color="text.secondary" sx={{ marginTop: 1 }}>
+                  Product ID: {product.productId} 
+                </Typography>
+                <Typography variant="body2" color="text.secondary">
+                  Seller ID: {product.sellerId}
+                </Typography>
+                <Typography variant="body2" color="text.secondary">
+                  Created Date: {new Date(product.createdDate).toLocaleDateString()}
+                </Typography>
+                <Typography variant="body2" color="text.secondary" sx={{ marginTop: 1 }}>
+                  {product.description}
+                </Typography>
+
+                <Box sx={{ display: 'flex', gap: 1, marginTop: 2 }}>
+                  <Button
+                    variant="contained"
+                    sx={{
+                      flexGrow: 1,
+                      textTransform: 'none',
+                      backgroundColor: '#4caf50',
+                      color: 'white',
+                      '&:hover': { backgroundColor: '#388e3c' },
+                    }}
+                    onClick={() => handleAccept(product.productId)}
+                  >
+                    Accept
+                  </Button>
+                  <Button
+                    variant="contained"
+                    sx={{
+                      flexGrow: 1,
+                      textTransform: 'none',
+                      backgroundColor: '#f44336',
+                      color: 'white',
+                      '&:hover': { backgroundColor: '#d32f2f' },
+                    }}
+                    onClick={() => handleReject(product.productId)}
+                  >
+                    Reject
+                  </Button>
+                </Box>
+              </CardContent>
+            </Card>
+          </Grid>
+        ))
+      )}
     </Grid>
   );
 }
