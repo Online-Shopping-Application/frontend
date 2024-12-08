@@ -1,13 +1,13 @@
 import { useReducer, useState } from "react";
 import { useCallback } from "react";
 import { createContext } from "react";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { getSession, setSession } from "./auth.util";
 import axiosInstance from "../util/axiosInstance";
 import { LOGIN_URL, ME_URL, PATH_AFTER_LOGIN, PATH_AFTER_LOGOUT, PATH_AFTER_REGISTER, REGISTER_URL } from "../util/globalConfig";
 import { useEffect } from "react";
 import toast from "react-hot-toast";
-import { PATH_DASHBOARD } from "../routes/paths";
+import { PATH_DASHBOARD, PATH_PUBLIC } from "../routes/paths";
 
 // we need reducer function for useReducer hook
 const authReducer = (state,action) => {
@@ -32,12 +32,10 @@ const authReducer = (state,action) => {
 }
 
 // we need an initial state object(for return object) for useReducer hook
-const initialAuthState = () => {
-    return {
-        isAuthenticated: false,
-        isAuthLoading: true,
-        user: undefined
-    }
+const initialAuthState = {
+    isAuthenticated: false,
+    isAuthLoading: true,
+    user: undefined
 }
 
 // we create our context here and export it
@@ -47,23 +45,30 @@ export const AuthContext = createContext(null);
 const AuthContextProvider = ({ children }) => {
     const [state,dispatch] = useReducer(authReducer,initialAuthState);
     const navigate = useNavigate();
+    const location = useLocation();
 
     // initialize method
     const initializeAuthContext = useCallback(async () => {
         try{
-            const token = getSession();
-            if(token){
-                const email = "chinthaka@gmail.com";
-                const password = "1234";
+            // console.log(location);
+
+            if(location.pathname == PATH_PUBLIC.home || location.pathname == PATH_PUBLIC.login ||
+                location.pathname == PATH_PUBLIC.register
+            ){
+                setSession(null);
+            }
+
+            const { accToken,refToken } = getSession();
+            if(accToken && refToken){
                 // validate access token by calling backend
-                const response = await axiosInstance.post(LOGIN_URL,{
-                    email,
-                    password
+                const response = await axiosInstance.post(ME_URL,{
+                    accToken,
+                    refToken
                 });
                 // in response, we receive token and user data
-                console.log(response);
+                // console.log(response);
                 const { data } = response;
-                setSession(data.object.object.access_token);
+                setSession(data.object.object.access_token,data.object.object.refresh_token);
                 dispatch({
                     type: "LOGIN",
                     payload: data.object
@@ -103,7 +108,7 @@ const AuthContextProvider = ({ children }) => {
             password,
             role
         });
-        console.log("Register Result : ",response);
+        // console.log("Register Result : ",response);
         toast.success("Register Was Successfull, Please Login");
         navigate(PATH_AFTER_REGISTER);
     },[]);
@@ -114,10 +119,11 @@ const AuthContextProvider = ({ children }) => {
             email,
             password
         });
-        console.log(response);
+        // console.log(response);
         const { data } = response;
-        console.log(data.object.object.access_token);
-        setSession(data.object.object.access_token);
+        // console.log(data.object.object.access_token);
+        // console.log(data.object.object.refresh_token);
+        setSession(data.object.object.access_token,data.object.object.refresh_token);
         dispatch({
             type: "LOGIN",
             payload: data.object

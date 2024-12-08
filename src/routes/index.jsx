@@ -1,4 +1,4 @@
-import { Route, Routes } from "react-router-dom";
+import { Navigate, Route, Routes } from "react-router-dom";
 import { PATH_DASHBOARD, PATH_PUBLIC } from "./paths";
 
 import AddProduct from "../Components/AddProduct";
@@ -24,6 +24,8 @@ import AuthGuardForCustomer from "../auth/AuthGuardForCustomer";
 import AuthGuardForSeller from "../auth/AuthGuardForSeller";
 import AuthGuardForAdmin from "../auth/AuthGaurdForAdmin";
 import Dashboard from "../pages/Dashboard/Dashboard";
+import UnauthorizedPage from "../pages/public/UnauthorizedPage";
+import NotFoundPage from "../pages/public/NotFoundPage";
 
 const GlobalRouter = () => {
     return (
@@ -33,6 +35,7 @@ const GlobalRouter = () => {
             <Route path={PATH_PUBLIC.register} element={<RegisterPage/>} />
             <Route path={PATH_PUBLIC.passwordChange} element={<ForgotPasswordPage/>} />
             <Route path={PATH_PUBLIC.verifyOtp} element={<VerifyOtpPage/>} />
+            <Route path={PATH_PUBLIC.unauthorized} element={<UnauthorizedPage/>} />
 
             <Route element={<AuthGuardForCustomer/>} >
                 <Route path={PATH_DASHBOARD.dashboard} element={<Search/>} />
@@ -49,19 +52,14 @@ const GlobalRouter = () => {
                 <Route path="/dashboard" element={<Dashboard/>} />
             </Route>
 
-            {/* <Route path="/sellerLandingPage" element = {<SellerLandingPage/>} /> */}
-            {/* <Route path={PATH_DASHBOARD.dashboard} element={<Search/>} /> */}
-            
-            {/* <Route path="/orderList" element = {<OrderList/>} /> */}
-
-            {/* <Route path="/refund-orders" element = {<RefundRequestPage/>} /> */}
-            {/* <Route path="/addProduct" element = {<AddProduct/>} /> */}
             <Route path="/notification" element = {<Notification/>} />
             <Route path="/receive" element = {<ReceiveNotification/>} />
             <Route path="/shopping-cart" element = {<ShoppingCartPage/>} />
             <Route path="/shopping-page" element = {<ShoppingPage/>} />
             <Route path="/item" element={<Item/>} />
-            {/* <Route path="/dashboard" element={<Dashboard/>} /> */}
+
+            <Route path={PATH_PUBLIC.notFound} element={<NotFoundPage/>} />
+            <Route path="*" element={<Navigate to={PATH_PUBLIC.notFound} replace />} />
         </Routes>
     );
 }
