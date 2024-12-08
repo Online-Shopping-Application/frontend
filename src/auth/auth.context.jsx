@@ -1,12 +1,13 @@
-import { useReducer } from "react";
+import { useReducer, useState } from "react";
 import { useCallback } from "react";
 import { createContext } from "react";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { getSession, setSession } from "./auth.util";
 import axiosInstance from "../util/axiosInstance";
 import { LOGIN_URL, ME_URL, PATH_AFTER_LOGIN, PATH_AFTER_LOGOUT, PATH_AFTER_REGISTER, REGISTER_URL } from "../util/globalConfig";
 import { useEffect } from "react";
 import toast from "react-hot-toast";
+import { PATH_DASHBOARD, PATH_PUBLIC } from "../routes/paths";
 
 // we need reducer function for useReducer hook
 const authReducer = (state,action) => {
@@ -31,12 +32,10 @@ const authReducer = (state,action) => {
 }
 
 // we need an initial state object(for return object) for useReducer hook
-const initialAuthState = () => {
-    return {
-        isAuthenticated: false,
-        isAuthLoading: true,
-        user: undefined
-    }
+const initialAuthState = {
+    isAuthenticated: false,
+    isAuthLoading: true,
+    user: undefined
 }
 
 // we create our context here and export it
@@ -46,22 +45,33 @@ export const AuthContext = createContext(null);
 const AuthContextProvider = ({ children }) => {
     const [state,dispatch] = useReducer(authReducer,initialAuthState);
     const navigate = useNavigate();
+    const location = useLocation();
 
     // initialize method
     const initializeAuthContext = useCallback(async () => {
         try{
-            const token = getSession();
-            if(token){
+            // console.log(location);
+
+            if(location.pathname == PATH_PUBLIC.home || location.pathname == PATH_PUBLIC.login ||
+                location.pathname == PATH_PUBLIC.register
+            ){
+                setSession(null);
+            }
+
+            const { accToken,refToken } = getSession();
+            if(accToken && refToken){
                 // validate access token by calling backend
                 const response = await axiosInstance.post(ME_URL,{
-                    token
+                    accToken,
+                    refToken
                 });
                 // in response, we receive token and user data
-                const {newToken,userInfo} = response;
-                setSession(newToken);
+                // console.log(response);
+                const { data } = response;
+                setSession(data.object.object.access_token,data.object.object.refresh_token);
                 dispatch({
                     type: "LOGIN",
-                    payload: userInfo
+                    payload: data.object
                 });
             }
             else{
@@ -89,33 +99,46 @@ const AuthContextProvider = ({ children }) => {
     },[]);
 
     // register method
-    const register = useCallback(async (firstName,lastName,email,password,role) => {
+    const register = useCallback(async (firstName,lastName,address,email,password,role) => {
         const response = await axiosInstance.post(REGISTER_URL,{
             firstName,
             lastName,
+            address,
             email,
             password,
             role
         });
-        console.log("Register Result : ",response);
+        // console.log("Register Result : ",response);
         toast.success("Register Was Successfull, Please Login");
         navigate(PATH_AFTER_REGISTER);
     },[]);
 
     // login method
-    const login = useCallback(async (username,password) => {
+    const login = useCallback(async (email,password) => {
         const response = await axiosInstance.post(LOGIN_URL,{
-            username,
+            email,
             password
         });
-        const {accessToken,userInfo} = response;
-        setSession(accessToken);
+        // console.log(response);
+        const { data } = response;
+        // console.log(data.object.object.access_token);
+        // console.log(data.object.object.refresh_token);
+        setSession(data.object.object.access_token,data.object.object.refresh_token);
         dispatch({
             type: "LOGIN",
-            payload: userInfo
+            payload: data.object
         });
-        toast.success("Login Was Successfull");
-        navigate(PATH_AFTER_LOGIN);
+        toast.success(data.message);
+        if(data.object.role.includes("seller")){
+            navigate("/sellerLandingPage");
+        }
+        else if(data.object.role.includes("customer")){
+            navigate(PATH_DASHBOARD.dashboard);
+        }
+        else if(data.object.role.includes("admin")){
+            navigate("/dashboard");
+        }
+        
     },[]);
 
     // logout method
