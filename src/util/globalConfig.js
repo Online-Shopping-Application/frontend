@@ -2,7 +2,7 @@ import { PATH_DASHBOARD, PATH_PUBLIC } from "../routes/paths";
 
 // Urls
 export const HOST_API_KEY = "http://localhost:9090";
-export const REGISTER_URL = "/user-service/api/v1/users/signup";
+export const REGISTER_URL = "/user-service/api/v1/users/register";
 export const LOGIN_URL = "/user-service/api/v1/users/login";
 export const ME_URL = "/user-service/api/v1/users/me"
 
