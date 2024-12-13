@@ -3,9 +3,7 @@ export const PATH_PUBLIC = {
     register:'/register',
     login:'/login',
     passwordChange:'/password-change',
-    verifyOtp:'/verify-otp',
-    unauthorized: '/unauthorized',
-    notFound: '/404',
+    verifyOtp:'/verify-otp'
 }
 
 export const PATH_DASHBOARD = {
